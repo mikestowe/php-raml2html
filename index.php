@@ -91,6 +91,6 @@ if (substr($RAML->currentResource->pathSafe, -1) == '/') {
 	$RAML->currentResource->pathSafe = substr($RAML->currentResource->pathSafe, 0, -1);
 }
 
-require_once('templates/theme.phtml');
+require_once($docsTheme);
 
 ?>
