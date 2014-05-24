@@ -24,6 +24,10 @@
 				border-bottom: 2px solid #999;
 			}
 			
+			header a {
+				color: #fff;
+			}
+			
 			article {
 				float: left;
 				min-width: 600px;
@@ -109,7 +113,7 @@
 
 	<body>
 		<header>
-			<h1><?php echo $RAML->title; ?></h1>
+			<h1><a href="<?php echo $_SERVER['PHP_SELF']; ?>"><?php echo $RAML->title; ?></a></h1>
 			<p>version <?php echo $RAML->version; ?> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <?php echo $RAML->baseUri; ?></p>
 		</header>
 		
