@@ -47,6 +47,14 @@ function formatResponse($text) {
 
 $RAML = generateResource($RAMLarray);
 $RAML->currentResource = $RAML;
+$RAML->currentAction = false;
+
+if (!empty($_GET['action']) && in_array($_GET['action'], $RAMLactionVerbs)) {
+	$RAML->currentAction = $_GET['action'];
+}
+
+// Kill for security purposes
+unset($_GET['action']);
 
 
 if (!empty($_GET['path']) && $_GET['path'] != '/') {

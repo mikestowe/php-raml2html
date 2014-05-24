@@ -1,16 +1,16 @@
 <br style="clear: both;" />
 
 <div style="float: left;">
-	<span class="badge badge_<?php echo $_GET['action']; ?>"><?php echo $_GET['action']; ?></span>
+	<span class="badge badge_<?php echo $RAML->currentAction; ?>"><?php echo $RAML->currentAction; ?></span>
 </div>
 
 <div style="float: left;">
-	<strong style="display: inline-block; font-size: 14px; padding-top: 5px;" class="text_<?php echo $_GET['action']; ?>"><?php echo $RAML->baseUri . $RAML->currentResource->path; ?></strong>
+	<strong style="display: inline-block; font-size: 14px; padding-top: 5px;" class="text_<?php echo $RAML->currentAction; ?>"><?php echo $RAML->baseUri . $RAML->currentResource->path; ?></strong>
 </div>
 
 <br style="clear: both;" />
 
-<p style="margin-top: 30px;"><?php echo $RAML->currentResource->verbs[$_GET['action']]['description']; ?></p>
+<p style="margin-top: 30px;"><?php echo $RAML->currentResource->verbs[$RAML->currentAction]['description']; ?></p>
 
 <h3>Parameters</h3>
 <table>
@@ -21,7 +21,7 @@
 	</thead>
 	
 	<?php
-	foreach ($RAML->currentResource->verbs[$_GET['action']]['queryParameters'] as $param => $details) {
+	foreach ($RAML->currentResource->verbs[$RAML->currentAction]['queryParameters'] as $param => $details) {
 	?>
 	
 		<tr>
@@ -36,7 +36,7 @@
 
 <h3>Response</h3>
 <?php
-foreach ($RAML->currentResource->verbs[$_GET['action']]['responses'] as $code => $response) {
+foreach ($RAML->currentResource->verbs[$RAML->currentAction]['responses'] as $code => $response) {
 ?>
 	<strong><?php echo $code; ?>:</strong>
 	<div class="apiresponse">
@@ -50,7 +50,7 @@ foreach ($RAML->currentResource->verbs[$_GET['action']]['responses'] as $code =>
 	<h3>Other Endpoint Actions</h3>
 	<?php
 	foreach ($RAML->currentResource->verbs as $verb => $resource) {
-		if ($verb == $_GET['action']) {
+		if ($verb == $RAML->currentAction) {
 			continue;
 		}
 	?>

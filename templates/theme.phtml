@@ -194,14 +194,14 @@
 			
 			
 			<?php
-			if (!$RAML->currentResource->exists || ($_GET['action'] && empty($RAML->currentResource->verbs[$_GET['action']]))):
+			if (!$RAML->currentResource->exists && !$RAML->currentAction):
 				include('_404.phtml');
 			endif;
 			?>
 			
 			
 			<?php 
-			if ($RAML->currentResource->verbs && empty($_GET['action'])):
+			if ($RAML->currentResource->verbs && !$RAML->currentAction):
 				include('_verbs.phtml');
 			endif;
 			?>
@@ -209,14 +209,14 @@
 			
 			
 			<?php 
-			if ($RAML->currentResource->resources && empty($_GET['action'])):
+			if ($RAML->currentResource->resources && !$RAML->currentAction):
 				include('_resources.phtml');
 			endif;
 			?>
 			
 			
 			<?php
-			if ($_GET['action'] && !empty($RAML->currentResource->verbs[$_GET['action']])):
+			if ($RAML->currentAction):
 				include('_action.phtml');
 			endif;
 			?>
