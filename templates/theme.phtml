@@ -71,6 +71,19 @@
 		        background-color: #d26460;
 		    }
 		    
+		    .text_get {
+		        color: #63a8e2;
+		    }
+		    .text_post {
+		        color: #6cbd7d;
+		    }
+		    .text_put {
+		        color: #22bac4;
+		    }
+		    .text_delete {
+		        color: #d26460;
+		    }
+		    
 		    ul.verbs, ul.resources, nav ul {
 		    	margin: 0;
 		    	padding: 0;
@@ -123,18 +136,23 @@
 			<?php if ($RAML->currentResource->path != '/'): ?>
 				<h2><?php echo $RAML->currentResource->path; ?></h2>
 			<?php endif; ?>
-			<?php echo $RAML->currentResource->description; ?>
+			
+			
+			
+			<?php if(empty($_GET['action'])):
+				echo $RAML->currentResource->description; 
+			endif; ?>
 			
 			
 			<?php
-			if (!$RAML->currentResource->exists):
+			if (!$RAML->currentResource->exists || ($_GET['action'] && empty($RAML->currentResource->verbs[$_GET['action']]))):
 				include('_404.phtml');
 			endif;
 			?>
 			
 			
 			<?php 
-			if ($RAML->currentResource->verbs):
+			if ($RAML->currentResource->verbs && empty($_GET['action'])):
 				include('_verbs.phtml');
 			endif;
 			?>
@@ -142,8 +160,15 @@
 			
 			
 			<?php 
-			if ($RAML->currentResource->resources):
+			if ($RAML->currentResource->resources && empty($_GET['action'])):
 				include('_resources.phtml');
+			endif;
+			?>
+			
+			
+			<?php
+			if ($_GET['action'] && !empty($RAML->currentResource->verbs[$_GET['action']])):
+				include('_action.phtml');
 			endif;
 			?>
 			
