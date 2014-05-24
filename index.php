@@ -1,7 +1,18 @@
 <?php
 require_once('inc/spyc.php');
 require_once('config.php');
-$RAMLarray = spyc_load(file_get_contents($RAMLsource));
+
+$RAMLarray = false;
+if ($cacheTimeLimit && function_exists('apc_fetch')) {
+	$RAMLarray = apc_fetch('RAML' . md5($RAMLsource));
+}
+
+if (!$RAMLarray) {
+	$RAMLarray = spyc_load(file_get_contents($RAMLsource));
+	if ($cacheTimeLimit && function_exists('apc_store')) {
+		apc_store('RAML' . md5($RAMLsource), $RAMLarray, $cacheTimeLimit);
+	}
+}
 
 
 function generateResource($RAMLarray) {
