@@ -1,0 +1,150 @@
+<html>
+	<head>
+		<title><?php echo $RAML->title; ?>: <?php echo $RAML->currentResource->path; ?></title>
+		
+		<style type="text/css">
+			body {
+				margin: 0;
+				font-family: arial;
+				font-size: 12px;
+			}
+			
+			a { 
+				text-decoration: none;
+			}
+			
+			h3 {
+				margin-top: 40px;
+			}
+			
+			header {
+				padding: 10px 20px;
+				background: #333;
+				color: #fff;
+				border-bottom: 2px solid #999;
+			}
+			
+			article {
+				float: left;
+				min-width: 600px;
+				margin: 0 20px;
+			}
+			
+			nav {
+				float: right;
+				min-width: 200px;
+				border-left: 1px dashed #999;
+				padding: 0 15px;
+			}
+			
+			.badge {
+				display: inline-block;
+				font-size: 14px;
+				padding: 5px;
+				margin-right: 20px;
+		        border-radius: 0;
+		        text-transform: uppercase;
+		        width: 70px;
+		        font-weight: normal;
+		        color: #f3f3f6;
+		        line-height: normal;
+		        background-color: #999;
+		        text-align: center;
+		    }
+		    .block.collapsed .badge {
+		        visibility: visible;
+		    }
+		    .badge_get {
+		        background-color: #63a8e2;
+		    }
+		    .badge_post {
+		        background-color: #6cbd7d;
+		    }
+		    .badge_put {
+		        background-color: #22bac4;
+		    }
+		    .badge_delete {
+		        background-color: #d26460;
+		    }
+		    
+		    ul.verbs, ul.resources, nav ul {
+		    	margin: 0;
+		    	padding: 0;
+		    	list-style-type: none;
+		    }
+		    
+		    ul.verbs li, ul.resources li {
+		    	padding: 0 0 10px 0;
+		    	margin: 0 0 10px 0;
+		    	border-bottom: 1px dotted #ccc;
+		    }
+		    
+		    ul.resources li a {
+		    	font-weight: bold;
+		    	font-size: 16px;
+		    	color: #666;
+		    }
+		    
+		    ul.resources li a:hover {
+		    	color: #63a8e2;
+		    }
+		    
+		    nav ul li a {
+		    	display: block;
+		    	padding: 0 0 10px 0;
+		    	margin: 0 0 10px 0;
+		    	border-bottom: 1px dotted #ccc;
+		    	font-size: 14px;
+		    	color: #666;
+		    }
+		    
+		    nav ul li a:hover {
+		    	font-weight: bold;
+		    }
+		    
+		    
+		</style>
+		
+	</head>
+
+	<body>
+		<header>
+			<h1><?php echo $RAML->title; ?></h1>
+			<p>version <?php echo $RAML->version; ?> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <?php echo $RAML->baseUri; ?></p>
+		</header>
+		
+		
+		<article>
+		
+			<h2><?php echo $RAML->currentResource->path; ?></h2>
+			<?php echo $RAML->currentResource->description; ?>
+			
+			
+			<?php 
+			if ($RAML->currentResource->verbs):
+				include('_verbs.phtml');
+			endif;
+			?>
+			
+			
+			
+			<?php 
+			if ($RAML->currentResource->resources):
+				include('_resources.phtml');
+			endif;
+			?>
+			
+		
+		</article>
+			
+			
+		<nav>
+			<?php 
+			if ($RAML->resources): 
+				include('_menu.phtml');
+			endif; 
+			?>
+		</nav>
+
+	</body>
+</html>

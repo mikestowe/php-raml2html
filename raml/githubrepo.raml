@@ -1,0 +1,88 @@
+#%RAML 0.8
+title: Mike's Github Repo
+baseUri: http://mikesgitapi.cloudhub.io
+version: v0.1
+/followers:
+  description: Get a list of followers for mikestowe
+  get:
+    description: returns a list of followers
+  post:
+    description: doesn't work
+    
+/following:
+  description: Get a list of who mikestowe is following on Github
+  get:
+    description: returns a list of following
+  put:
+    description: stop trying to update my stuff...
+
+/htmle:
+  description: the HTML repo
+  get:
+    description: returns a list of commits
+  connect:
+    description: what are you doing???
+
+  /branches:
+    description: Gets branches!
+    displayName: HTMLe Branches!
+    get:
+      description: returns a list of branches
+    delete:
+      description: acts like get... but its pinkish red
+      
+  /forks:
+    get:
+      description: returnsa list of forks
+    options:
+      description: acts like get... but its light green
+      
+/evalscanner:
+  get:
+    description: returns a list of commits
+  patch:
+    description: throws an error because you shouldn't be doing that...
+  /branches:
+    get:
+      description: returns a list of branches
+    trace:
+      description: doesn't do jack...
+  /forks:
+    get:
+      description: returnsa list of forks
+    
+/phpscanner:
+  get:
+    description: returns a list of commits
+
+  /branches:
+    get:
+      description: returns a list of branches
+      
+  /forks:
+    get:
+      description: returnsa list of forks
+    
+/smrtclass:
+  get:
+    description: returns a list of commits
+
+  /branches:
+    get:
+      description: returns a list of branches
+      
+  /forks:
+    get:
+      description: returnsa list of forks
+      
+/formbuilder:
+  get:
+    description: returns a list of commits
+
+  /branches:
+    get:
+      description: returns a list of branches
+      
+  /forks:
+    get:
+      description: returnsa list of forks

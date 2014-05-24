@@ -1,0 +1,17 @@
+<h3>Available Endpoints</h3>
+	
+<ul class="resources">
+	<?php foreach ($RAML->currentResource->resources as $endpoint => $resource) { ?>
+	<li>
+		<div style="float: left; width: 150px;">
+			<a href="<?php echo $_SERVER['PHP_SELF']; ?>?path=<?php echo $RAML->currentResource->pathSafe . $endpoint; ?>"><?php echo $endpoint; ?></a>
+		</div>
+		
+		<div style="float: left;">
+			<?php echo $resource['description']; ?>
+		</div>
+		
+		<br style="clear: both;" />
+	</li>
+	<?php } ?>
+</ul>
