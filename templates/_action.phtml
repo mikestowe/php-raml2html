@@ -13,19 +13,50 @@
 <p style="margin-top: 30px;"><?php echo $RAML->currentResource->verbs[$_GET['action']]['description']; ?></p>
 
 <h3>Parameters</h3>
+<table>
+	<thead>
+		<tr>
+			<td>Parameter</td><td>Type</td><td>Description</td>
+		</tr>
+	</thead>
+	
+	<?php
+	foreach ($RAML->currentResource->verbs[$_GET['action']]['queryParameters'] as $param => $details) {
+	?>
+	
+		<tr>
+			<td><?php echo $param; ?></td><td><?php echo $details['type']; ?></td><td><?php echo $details['description']; ?></td>
+		</tr>
+		
+	<?php } ?>
+	
+</table>
+
+
 
 <h3>Response</h3>
-
-<h3>Other Endpoint Actions</h3>
 <?php
-foreach ($RAML->currentResource->verbs as $verb => $resource) {
-	if ($verb == $_GET['action']) {
-		continue;
-	}
+foreach ($RAML->currentResource->verbs[$_GET['action']]['responses'] as $code => $response) {
+?>
+	<strong><?php echo $code; ?>:</strong>
+	<div class="apiresponse">
+			<?php echo formatResponse($response['body']['example']); ?>
+	</div>
+<?php
+}
 ?>
 
-<div style="float: left;">
-	<a href="<?php echo $_SERVER['PHP_SELF']; ?>?path=<?php echo $RAML->currentResource->path; ?>&action=<?php echo $verb; ?>" class="badge badge_<?php echo $verb; ?>"><?php echo $verb; ?></a>
-</div>
-
-<?php } ?>
+<?php if (count($RAML->currentResource->verbs) > 1): ?>
+	<h3>Other Endpoint Actions</h3>
+	<?php
+	foreach ($RAML->currentResource->verbs as $verb => $resource) {
+		if ($verb == $_GET['action']) {
+			continue;
+		}
+	?>
+	<div style="float: left;">
+		<a href="<?php echo $_SERVER['PHP_SELF']; ?>?path=<?php echo $RAML->currentResource->path; ?>&action=<?php echo $verb; ?>" class="badge badge_<?php echo $verb; ?>"><?php echo $verb; ?></a>
+	</div>
+	
+	<?php } ?>
+<?php endif; ?>

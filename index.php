@@ -29,6 +29,11 @@ function generateResource($RAMLarray) {
 }
 
 
+function formatResponse($text) {
+	return str_replace(array(" ", "\n"), array("&nbsp;", "<br />"), $text);
+}
+
+
 $RAML = generateResource($RAMLarray);
 $RAML->currentResource = $RAML;
 

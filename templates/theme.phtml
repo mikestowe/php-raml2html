@@ -3,7 +3,7 @@
 		<title><?php echo $RAML->title; ?>: <?php echo $RAML->currentResource->path; ?></title>
 		
 		<style type="text/css">
-			body {
+			body, table {
 				margin: 0;
 				font-family: arial;
 				font-size: 12px;
@@ -30,7 +30,7 @@
 			
 			article {
 				float: left;
-				min-width: 600px;
+				width: 600px;
 				margin: 0 20px;
 			}
 			
@@ -39,6 +39,25 @@
 				min-width: 200px;
 				border-left: 1px dashed #999;
 				padding: 0 15px;
+			}
+			
+			table thead tr td {
+				background: #666;
+				color: #fff;
+				font-weight: bold;
+			}
+			
+			table tr {
+				padding: 15px 0;
+			}
+			
+			tr:nth-child(odd) {
+			    background-color: #f3f3f3;
+			}
+			
+			table td {
+				vertical-align: top;
+				padding: 5px;
 			}
 			
 			.badge {
@@ -136,6 +155,17 @@
 		    
 		    nav ul li a:hover {
 		    	font-weight: bold;
+		    }
+		    
+		    div.apiresponse {
+		    	width: 600px;
+		    	max-height: 300px;
+		    	background: #f3f3f3;
+		    	border: 1px solid #333;
+		    	padding: 10px;
+		    	overflow: scroll;
+		    	font-family: monospace;
+		    	font-size: 10px;
 		    }
 		    
 		    
