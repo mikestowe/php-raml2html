@@ -1,7 +1,7 @@
 <h2>Documentation</h2>
 	
 <ul>
-	<li><a href="<?php echo $_SERVER['PHP_SELF']; ?>?path=/">/</a></li>
+	<li><a href="<?php echo $_SERVER['PHP_SELF']; ?>?path=/">Index</a></li>
 	
 	<?php foreach ($RAML->resources as $endpoint => $resource) { ?>
 	<li><a href="<?php echo $_SERVER['PHP_SELF']; ?>?path=<?php echo $endpoint; ?>"><?php echo $endpoint; ?></a></li>

@@ -120,7 +120,9 @@
 		
 		<article>
 		
-			<h2><?php echo $RAML->currentResource->path; ?></h2>
+			<?php if ($RAML->currentResource->path != '/'): ?>
+				<h2><?php echo $RAML->currentResource->path; ?></h2>
+			<?php endif; ?>
 			<?php echo $RAML->currentResource->description; ?>
 			
 			
