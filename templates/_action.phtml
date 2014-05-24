@@ -13,8 +13,31 @@
 <p style="margin-top: 30px;"><?php echo $RAML->currentResource->verbs[$RAML->currentAction]['description']; ?></p>
 
 
+<?php if ($RAML->currentResource->verbs[$RAML->currentAction]['queryParameters']): ?>
+	<h3>Query Parameters</h3>
+	<table>
+		<thead>
+			<tr>
+				<td>Parameter</td><td>Type</td><td>Description</td>
+			</tr>
+		</thead>
+		
+		<?php
+		foreach ($RAML->currentResource->verbs[$RAML->currentAction]['queryParameters'] as $param => $details) {
+		?>
+		
+			<tr>
+				<td><?php echo $param; ?></td><td><?php echo $details['type']; ?></td><td><?php echo $details['description']; ?></td>
+			</tr>
+			
+		<?php } ?>
+		
+	</table>
+<?php endif; ?>
 
-<h3>Parameters</h3>
+
+<?php if ($RAML->currentResource->verbs[$RAML->currentAction]['body']['application/x-www-form-urlencoded']['formParameters']): ?>
+<h3>Form Parameters</h3>
 <table>
 	<thead>
 		<tr>
@@ -23,7 +46,7 @@
 	</thead>
 	
 	<?php
-	foreach ($RAML->currentResource->verbs[$RAML->currentAction]['queryParameters'] as $param => $details) {
+	foreach ($RAML->currentResource->verbs[$RAML->currentAction]['body']['application/x-www-form-urlencoded']['formParameters'] as $param => $details) {
 	?>
 	
 		<tr>
@@ -33,6 +56,7 @@
 	<?php } ?>
 	
 </table>
+<?php endif; ?>
 
 
 
