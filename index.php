@@ -4,20 +4,24 @@ require_once('config.php');
 $RAMLarray = spyc_load(file_get_contents($RAMLsource));
 
 
-function generateResource($object, $RAMLarray) {
+function generateResource($RAMLarray) {
 	global $RAMLactionVerbs;
 	
 	$object = new stdClass();
 	$object->resources = array();
 	$object->verbs = array();
 	
-	foreach ($RAMLarray as $k => $v) {
-		if (in_array($k, $RAMLactionVerbs)) {
-			$object->verbs[$k] = $v;
-		} elseif (substr($k, 0, 1) != '/') {
-			$object->$k = $v;
-		} else {
-			$object->resources[$k] = $v;
+	if ($RAMLarray) {
+		$object->exists= true;
+		
+		foreach ($RAMLarray as $k => $v) {
+			if (in_array($k, $RAMLactionVerbs)) {
+				$object->verbs[$k] = $v;
+			} elseif (substr($k, 0, 1) != '/') {
+				$object->$k = $v;
+			} else {
+				$object->resources[$k] = $v;
+			}
 		}
 	}
 	
@@ -25,7 +29,7 @@ function generateResource($object, $RAMLarray) {
 }
 
 
-$RAML = generateResource($RAML, $RAMLarray);
+$RAML = generateResource($RAMLarray);
 $RAML->currentResource = $RAML;
 
 
@@ -48,7 +52,12 @@ if (!empty($_GET['path']) && $_GET['path'] != '/') {
 		$pathRAMLArray = $pathRAMLArray['/' . $p];
 	}
 	
-	$RAML->currentResource = generateResource($RAML->currentResource, $pathRAMLArray);
+	if (!$pathRAMLArray) {
+		$RAML->currentResource = generateResource(array());
+	} else {
+		$RAML->currentResource = generateResource($pathRAMLArray);
+	}
+	
 }
 
 $RAML->currentResource->path = !empty($_GET['path']) ? $_GET['path'] : '/';
@@ -57,7 +66,6 @@ $RAML->currentResource->pathSafe = $RAML->currentResource->path;
 if (substr($RAML->currentResource->pathSafe, -1) == '/') {
 	$RAML->currentResource->pathSafe = substr($RAML->currentResource->pathSafe, 0, -1);
 }
-
 
 require_once('templates/theme.phtml');
 

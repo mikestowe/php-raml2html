@@ -124,6 +124,13 @@
 			<?php echo $RAML->currentResource->description; ?>
 			
 			
+			<?php
+			if (!$RAML->currentResource->exists):
+				include('_404.phtml');
+			endif;
+			?>
+			
+			
 			<?php 
 			if ($RAML->currentResource->verbs):
 				include('_verbs.phtml');
