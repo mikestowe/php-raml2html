@@ -31,10 +31,20 @@ $RAML->currentResource = $RAML;
 
 if (!empty($_GET['path']) && $_GET['path'] != '/') {
 	$pathRAMLArray = $RAMLarray;
-	
+
+	$getPath = $_GET['path'];
 	$paths = explode('/', $_GET['path']);
 	if (empty($paths[0])) { array_shift($paths); }
 	foreach ($paths as $p) {
+		if (isset($pathRAMLArray[$getPath])) {
+			$pathRAMLArray = $pathRAMLArray[$getPath];
+			break;
+		}
+		
+		$pl = strlen($p);
+		$gpl = strlen($getPath);
+		$getPath = substr($getPath, $pl + 1, $gpl);
+		
 		$pathRAMLArray = $pathRAMLArray['/' . $p];
 	}
 	
