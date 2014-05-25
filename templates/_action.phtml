@@ -59,15 +59,45 @@
 <?php endif; ?>
 
 
+<?php if ($RAML->currentResource->verbs[$RAML->currentAction]['body']['application/json']['schema']['properties']): ?>
+<h3>JSON Parameters</h3>
+<table>
+	<thead>
+		<tr>
+			<td>Parameter</td><td>Type</td><td>Description</td>
+		</tr>
+	</thead>
+	
+	<?php
+	$tmp = $RAML->currentResource->verbs[$RAML->currentAction]['body']['application/json']['schema'];
+	if (is_string($RAML->currentResource->verbs[$RAML->currentAction]['body']['application/json']['schema'])) {
+		$tmp = json_decode($RAML->currentResource->verbs[$RAML->currentAction]['body']['application/json']['schema'], true);
+	}
+	
+	foreach ($tmp['properties'] as $param => $details) {
+	?>
+	
+		<tr>
+			<td><?php echo $param; ?></td><td><?php echo $details['type']; ?></td><td><?php echo $details['description']; ?></td>
+		</tr>
+		
+	<?php } ?>
+	
+</table>
+<?php endif; ?>
+
+
 
 <h3>Response</h3>
 <?php
 foreach ($RAML->currentResource->verbs[$RAML->currentAction]['responses'] as $code => $response) {
 ?>
-	<strong><?php echo $code; ?>:</strong>
+	<tt><strong><?php echo $code; ?>:</strong> <?php echo isset($response['description']) ? $response['description'] : ''; ?></tt>
+	<?php if (isset($response['body']['example'])): ?>
 	<div class="apiresponse">
 			<?php echo formatResponse($response['body']['example']); ?>
 	</div>
+	<?php endif; ?>
 <?php
 }
 ?>
