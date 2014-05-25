@@ -87,11 +87,12 @@ if (!empty($_GET['path']) && $_GET['path'] != '/') {
 	$pathRAMLArray = $RAML->resources;
 	while ($paths) {
 		$tmp = findPath($pathRAMLArray, $paths);
-		if ($tmp) {
+		if (!empty($tmp['path'])) {
 			$pathRAMLArray = $pathRAMLArray[$tmp['path']];
 			$paths = $tmp['array'];
 		} else {
 			$pathRAMLArray = false;
+			break;
 		}
 	}
 	
@@ -99,7 +100,8 @@ if (!empty($_GET['path']) && $_GET['path'] != '/') {
 		$RAML->currentResource = generateResource(array());
 	} else {
 		$RAML->currentResource = generateResource($pathRAMLArray);
-	}	
+	}
+	
 }
 
 $RAML->currentResource->path = !empty($_GET['path']) ? $_GET['path'] : '/';
