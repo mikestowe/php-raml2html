@@ -45,6 +45,28 @@ function formatResponse($text) {
 }
 
 
+function findPath($pathRAMLArray, $paths) {
+	$calcPath = '';
+	$validPath = '';
+	
+	foreach($paths as $p) {
+		$calcPath .= '/' . $p;
+		if (isset($pathRAMLArray[$calcPath])) {
+			$validPath = $calcPath;
+		} elseif ($validPath) {
+			return array('path' => $validPath, 'array' => $paths);
+		}
+		array_shift($paths);
+		
+		if (!$paths && isset($pathRAMLArray[$calcPath])) {
+			return array('path' => $validPath, 'array' => $paths);
+		}
+	}
+	
+	return array('path' => false, 'array' => array());
+}
+
+
 $RAML = generateResource($RAMLarray);
 $RAML->currentResource = $RAML;
 $RAML->currentAction = false;
@@ -56,32 +78,28 @@ if (!empty($_GET['action']) && in_array($_GET['action'], $RAMLactionVerbs)) {
 // Kill for security purposes
 unset($_GET['action']);
 
-
 if (!empty($_GET['path']) && $_GET['path'] != '/') {
 	$pathRAMLArray = $RAMLarray;
 
-	$getPath = $_GET['path'];
 	$paths = explode('/', $_GET['path']);
 	if (empty($paths[0])) { array_shift($paths); }
-	foreach ($paths as $p) {
-		if (isset($pathRAMLArray[$getPath])) {
-			$pathRAMLArray = $pathRAMLArray[$getPath];
-			break;
+	
+	$pathRAMLArray = $RAML->resources;
+	while ($paths) {
+		$tmp = findPath($pathRAMLArray, $paths);
+		if ($tmp) {
+			$pathRAMLArray = $pathRAMLArray[$tmp['path']];
+			$paths = $tmp['array'];
+		} else {
+			$pathRAMLArray = false;
 		}
-		
-		$pl = strlen($p);
-		$gpl = strlen($getPath);
-		$getPath = substr($getPath, $pl + 1, $gpl);
-		
-		$pathRAMLArray = $pathRAMLArray['/' . $p];
 	}
 	
 	if (!$pathRAMLArray) {
 		$RAML->currentResource = generateResource(array());
 	} else {
 		$RAML->currentResource = generateResource($pathRAMLArray);
-	}
-	
+	}	
 }
 
 $RAML->currentResource->path = !empty($_GET['path']) ? $_GET['path'] : '/';
