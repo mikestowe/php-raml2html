@@ -59,7 +59,7 @@
 <?php endif; ?>
 
 
-<?php if ($RAML->currentResource->verbs[$RAML->currentAction]['body']['application/json']['schema']['properties']): ?>
+<?php if (isset($RAML->currentResource->verbs[$RAML->currentAction]['body']['application/json']['schema']['properties'])): ?>
 <h3>JSON Parameters</h3>
 <table>
 	<thead>
