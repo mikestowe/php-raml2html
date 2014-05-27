@@ -213,7 +213,7 @@
 				<?php endif; ?>
 				
 				
-				<?php if(empty($_GET['action'])):
+				<?php if(empty($RAML->currentAction) && $RAML->currentResource->description):
 					echo $RAML->currentResource->description; 
 				endif; ?>
 				
