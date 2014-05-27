@@ -3,6 +3,13 @@
 		<title><?php echo $RAML->title; ?>: <?php echo $RAML->currentResource->path; ?></title>
 		
 		<style type="text/css">
+		
+			*, *:before, *:after {
+			  -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
+			}
+			
+			body { margin: 0; }
+			
 			body, table {
 				margin: 0;
 				font-family: arial;
@@ -28,15 +35,13 @@
 				color: #fff;
 			}
 			
+			#container { position: relative; }
+			
 			article {
-				float: left;
-				width: 600px;
 				margin: 0 20px;
 			}
 			
 			nav {
-				float: right;
-				min-width: 200px;
 				border-left: 1px dashed #999;
 				padding: 0 15px;
 			}
@@ -49,7 +54,7 @@
 			}
 			
 			table {
-				width: 100%;
+				width: 96%;
 				border: 1px solid #333;
 			}
 			
@@ -170,7 +175,7 @@
 		    }
 		    
 		    div.apiresponse {
-		    	width: 600px;
+		    	width: 96%;
 		    	max-height: 300px;
 		    	background: #f3f3f3;
 		    	border: 1px solid #333;
@@ -179,8 +184,13 @@
 		    	font-family: monospace;
 		    	font-size: 10px;
 		    }
-		    
-		    
+			
+			@media screen and (min-width: 60em ) {
+			  article { margin-right: 30.75em; }
+			
+				nav { position: absolute; top: 0; right: 0; width: 30em; }   
+			}
+		
 		</style>
 		
 	</head>
@@ -192,59 +202,63 @@
 		</header>
 		
 		
-		<article>
+		<div id="container">
 		
-			<?php if ($RAML->currentResource->path != '/'): ?>
-				<h2><?php echo $RAML->currentResource->path; ?></h2>
-			<?php endif; ?>
+			<article>
 			
+				<?php if ($RAML->currentResource->path != '/'): ?>
+					<h2><?php echo $RAML->currentResource->path; ?></h2>
+				<?php elseif (!$RAML->currentResource->description): ?>
+					<!-- CSS HACK --><img width="1" height="1" />
+				<?php endif; ?>
+				
+				
+				<?php if(empty($_GET['action'])):
+					echo $RAML->currentResource->description; 
+				endif; ?>
+				
+				
+				<?php
+				if (!$RAML->currentResource->exists && !$RAML->currentAction):
+					include('_404.phtml');
+				endif;
+				?>
+				
+				
+				<?php 
+				if ($RAML->currentResource->verbs && !$RAML->currentAction):
+					include('_verbs.phtml');
+				endif;
+				?>
+				
+				
+				
+				<?php 
+				if ($RAML->currentResource->resources && !$RAML->currentAction):
+					include('_resources.phtml');
+				endif;
+				?>
+				
+				
+				<?php
+				if ($RAML->currentAction):
+					include('_action.phtml');
+				endif;
+				?>
+				
 			
-			
-			<?php if(empty($_GET['action'])):
-				echo $RAML->currentResource->description; 
-			endif; ?>
-			
-			
-			<?php
-			if (!$RAML->currentResource->exists && !$RAML->currentAction):
-				include('_404.phtml');
-			endif;
-			?>
-			
-			
-			<?php 
-			if ($RAML->currentResource->verbs && !$RAML->currentAction):
-				include('_verbs.phtml');
-			endif;
-			?>
-			
-			
-			
-			<?php 
-			if ($RAML->currentResource->resources && !$RAML->currentAction):
-				include('_resources.phtml');
-			endif;
-			?>
-			
-			
-			<?php
-			if ($RAML->currentAction):
-				include('_action.phtml');
-			endif;
-			?>
-			
-		
-		</article>
-			
-			
-		<nav>
-			<?php 
-			if ($RAML->resources): 
-				include('_menu.phtml');
-			endif; 
-			?>
-		</nav>
+			</article>
+				
+				
+			<nav>
+				<?php 
+				if ($RAML->resources): 
+					include('_menu.phtml');
+				endif; 
+				?>
+			</nav>
 
+		</div>
 
 		<footer>
 			
