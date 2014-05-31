@@ -1,7 +1,7 @@
 <?php
 /**
   * RAML2HTML for PHP -- A Simple API Docs Script for RAML & PHP
-  * @version 0.1beta
+  * @version 0.2beta
   * @author Mike Stowe <me@mikestowe.com>
   * @link https://github.com/mikestowe/php-raml2html
   * @link http://www.mikestowe.com/2014/05/raml-2-html.php
@@ -30,6 +30,8 @@ function generateResource($RAMLarray) {
 	$object = new stdClass();
 	$object->resources = array();
 	$object->verbs = array();
+	$object->traits = array();
+	$object->is = array();
 	
 	if ($RAMLarray) {
 		$object->exists= true;
@@ -37,6 +39,12 @@ function generateResource($RAMLarray) {
 		foreach ($RAMLarray as $k => $v) {
 			if (in_array($k, $RAMLactionVerbs)) {
 				$object->verbs[$k] = $v;
+			} elseif ($k == 'traits') {
+				foreach ($v as $tv) {
+					$object->traits[key($tv)] = $tv[key($tv)];
+				}
+			} elseif ($k == 'is') {
+				$object->is = $v;
 			} elseif (substr($k, 0, 1) != '/') {
 				$object->$k = $v;
 			} else {
@@ -112,6 +120,19 @@ if (!empty($_GET['path']) && $_GET['path'] != '/') {
 	}
 	
 }
+
+
+if ($RAML->currentResource->is) {
+	foreach ($RAML->currentResource->is as $v) {
+		if (!isset($RAML->currentResource->$v)) {
+			$RAML->currentResource->$v = $RAML->traits[$v];
+		}
+	}
+}
+
+// Clear Temp Trait Data
+unset($RAML->traits, $RAML->is, $RAML->currentResource->traits, $RAML->currentResource->is);
+
 
 $RAML->currentResource->path = !empty($_GET['path']) ? $_GET['path'] : '/';
 $RAML->currentResource->pathSafe = $RAML->currentResource->path;
