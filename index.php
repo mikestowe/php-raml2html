@@ -58,6 +58,10 @@ function generateResource($RAMLarray) {
 
 
 function formatResponse($text) {
+	if (preg_match('/^!include ([a-z_\.\/]+)/i', $text, $matches)) {
+		$text = htmlentities(file_get_contents($matches[1]));
+	}
+
 	return str_replace(array(" ", "\n"), array("&nbsp;", "<br />"), $text);
 }
 
