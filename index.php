@@ -41,7 +41,12 @@ function generateResource($RAMLarray) {
 				$object->verbs[$k] = $v;
 			} elseif ($k == 'traits') {
 				foreach ($v as $tv) {
-					$object->traits[key($tv)] = $tv[key($tv)];
+					$tmpv = $tv[key($tv)];
+					if (($inc = hasInclude($tmpv))) {
+						$tmpv = handleInclude($inc);
+					}
+					
+					$object->traits[key($tv)] = spyc_load($tmpv);
 				}
 			} elseif ($k == 'is') {
 				$object->is = $v;
@@ -57,11 +62,25 @@ function generateResource($RAMLarray) {
 }
 
 
-function formatResponse($text) {
-	if (preg_match('/^!include ([a-z_\.\/]+)/i', $text, $matches)) {
-		$text = htmlentities(file_get_contents($matches[1]));
+function hasInclude($text) {
+	if (is_string($text) && preg_match('/^!include ([a-z_\.\/]+)/i', $text, $matches)) {
+		return $matches[1];
 	}
+	
+	return false;
+}
 
+
+function handleInclude($url) {
+	return file_get_contents($url);
+}
+
+
+function formatResponse($text) {
+	if (($inc = hasInclude($text))) {
+		$text = htmlentities(handleInclude($inc));
+	}
+	
 	return str_replace(array(" ", "\n"), array("&nbsp;", "<br />"), $text);
 }
 
