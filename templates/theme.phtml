@@ -204,8 +204,7 @@
 		
 		<div id="container">
 		
-			<article>
-			
+			<article>		
 				<?php if ($RAML->getCurrentPath() != '/'): ?>
 					<h2><?php echo $RAML->getCurrentPath(); ?></h2>
 				<?php elseif (!$RAML->path()->description): ?>
@@ -213,20 +212,23 @@
 				<?php endif; ?>
 				
 				
-				<?php if(!$RAML->getCurrentAction() && $RAML->path()->description):
+				<?php $validPath = $RAML->isPathValid($RAML->getCurrentPath()); ?>
+				
+				
+				<?php if($validPath && !$RAML->getCurrentAction() && $RAML->path()->description):
 					echo $RAML->path()->description; 
 				endif; ?>
 				
 				
 				<?php
-				if (!$RAML->isPathValid($RAML->getCurrentPath())):
+				if (!$validPath):
 					include('_404.phtml');
 				endif;
 				?>
 				
 				
 				<?php 
-				if ($RAML->path()->getVerbs() && !$RAML->getCurrentAction()):
+				if ($validPath && $RAML->path()->getVerbs() && !$RAML->getCurrentAction()):
 					include('_verbs.phtml');
 				endif;
 				?>
@@ -234,7 +236,7 @@
 				
 				
 				<?php 
-				if ($RAML->getChildPaths($RAML->getCurrentPath()) && !$RAML->getCurrentAction()):
+				if ($validPath && $RAML->getChildPaths($RAML->getCurrentPath()) && !$RAML->getCurrentAction()):
 					include('_resources.phtml');
 				endif;
 				?>

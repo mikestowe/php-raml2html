@@ -1,5 +1,7 @@
 <h3>Available Actions</h3>
-
+<?php
+var_dump($RAML->path()->getVerbs());
+?>
 <ul class="verbs">
 	<?php foreach ($RAML->path()->getVerbs() as $verb) { ?>
 	<li>

@@ -18,12 +18,13 @@ class RAML extends RAMLDataObject
 	{
 		$this->setMaster($this);
 		$this->verbs = $verbs;
+		parent::__construct();
 	}
 	
 	
 	public function buildFromArray($array)
 	{
-		$this->paths['/'] = new RAMLPathObject();
+		$this->paths['/'] = new RAMLPathObject($this, '/');
 		
 		foreach ($array as $key => $value) {
 			if (is_array($value) && substr($key, 0, 1) == '/') {
@@ -42,12 +43,12 @@ class RAML extends RAMLDataObject
 	
 	
 	public function generatePathData($key, $value) {
-		
-		$this->paths[$key] = new RAMLPathObject();
+		$this->paths[$key] = new RAMLPathObject($this, $key);
 		
 		foreach ($value as $skey => $svalue) {
 			if (is_array($svalue) && substr($skey, 0, 1) == '/') {
 				$this->paths[$key]->addChild($key . $skey, $skey);
+				var_dump($this->paths[$key]->getChildren());
 				$this->generatePathData($key . $skey, $svalue);
 				unset($value[$skey]);
 			} elseif ($skey == 'is') {
@@ -98,6 +99,11 @@ class RAML extends RAMLDataObject
 	
 	public function isActionValid($action)
 	{
+		// Path must be valid before testing action
+		if(!$this->isPathValid($this->getCurrentPath())) {
+			return false;
+		}
+		
 		$t = strtoupper($action);
 		if (in_array($t, $this->path()->getVerbs())) {
 			return true;

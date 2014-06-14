@@ -1,7 +1,7 @@
 <?php
 class RAMLDataObject
 {
-	private $master;
+	protected $master;
 	private $data = array();
 	
 	public function __construct(array $data = array())

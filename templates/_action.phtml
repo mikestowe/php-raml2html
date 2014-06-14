@@ -89,36 +89,27 @@
 
 
 <h3>Response</h3>
-<?php
-foreach ($RAML->action()->get('responses')->toArray() as $code => $response) {
-?>
-	<tt><strong><?php echo $code; ?>:</strong> <?php echo isset($response['description']) ? $response['description'] : ''; ?></tt>
-	<?php if (isset($response['body']['example'])): ?>
+
+<?php foreach ($RAML->path()->getResponses() as $code => $responses) { ?>
+	<tt><strong><?php echo $code; ?>:</strong></tt><br /><br />
+	
+	<?php 
+		foreach ($responses as $response) {
+			if (!$response['example']) {
+				continue;
+			}
+			 
+			echo '<tt>' . $response['type'] . '</tt>';
+	?>
 	<div class="apiresponse">
-			<?php echo formatResponse($response['body']['example']); ?>
+			<?php echo formatResponse($response['example']); ?>
 	</div>
 	<p>&nbsp;</p>
-	<?php endif; ?>
-	
-	<?php if (isset($response['body']['application/json'])): ?>
-	<tt>(application/json)</tt>
-	<div class="apiresponse">
-			<?php echo formatResponse($response['body']['application/json']['schema']); ?>
-	</div>
-	<p>&nbsp;</p>
-	<?php endif; ?>
-	
-	<?php if (isset($response['body']['application/xml']['schema'])): ?>
-	<tt>(application/xml)</tt>
-	<div class="apiresponse">
-			<?php echo formatResponse($response['body']['application/xml']); ?>
-	</div>
-	<p>&nbsp;</p>
-	<?php endif; ?>
-	
-<?php
-}
-?>
+	<?php
+		}
+	} ?>
+
+
 
 <?php if (count($RAML->path()->getVerbs()) > 1): ?>
 	<h3>Other Endpoint Actions</h3>
