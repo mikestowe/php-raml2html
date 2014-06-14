@@ -9,6 +9,9 @@
   */
 
 require_once('inc/spyc.php');
+require_once('inc/ramlDataObject.php');
+require_once('inc/raml.php');
+require_once('inc/ramlPathObject.php');
 require_once('config.php');
 
 $RAMLarray = false;
@@ -23,145 +26,21 @@ if (!$RAMLarray) {
 	}
 }
 
-
-function generateResource($RAMLarray) {
-	global $RAMLactionVerbs;
-	
-	$object = new stdClass();
-	$object->resources = array();
-	$object->verbs = array();
-	$object->traits = array();
-	$object->is = array();
-	
-	if ($RAMLarray) {
-		$object->exists= true;
-		
-		foreach ($RAMLarray as $k => $v) {
-			if (in_array($k, $RAMLactionVerbs)) {
-				$object->verbs[$k] = $v;
-			} elseif ($k == 'traits') {
-				foreach ($v as $tv) {
-					$tmpv = $tv[key($tv)];
-					if (($inc = hasInclude($tmpv))) {
-						$tmpv = handleInclude($inc);
-					}
-					
-					$object->traits[key($tv)] = spyc_load($tmpv);
-				}
-			} elseif ($k == 'is') {
-				$object->is = $v;
-			} elseif (substr($k, 0, 1) != '/') {
-				$object->$k = $v;
-			} else {
-				$object->resources[$k] = $v;
-			}
-		}
-	}
-	
-	return $object;
+function formatResponse($text) {	
+	return str_replace(array(" ", "\n"), array("&nbsp;", "<br />"), htmlentities($text));
 }
 
+$RAML = new RAML($RAMLactionVerbs);
+$RAML->buildFromArray($RAMLarray);
 
-function hasInclude($text) {
-	if (is_string($text) && preg_match('/^!include ([a-z_\.\/]+)/i', $text, $matches)) {
-		return $matches[1];
-	}
-	
-	return false;
+if (isset($_GET['path'])) {
+	$RAML->setCurrentPath($_GET['path']);
+	unset($_GET['path']);
 }
 
-
-function handleInclude($url) {
-	return file_get_contents($url);
-}
-
-
-function formatResponse($text) {
-	if (($inc = hasInclude($text))) {
-		$text = htmlentities(handleInclude($inc));
-	}
-	
-	return str_replace(array(" ", "\n"), array("&nbsp;", "<br />"), $text);
-}
-
-
-function findPath($pathRAMLArray, $paths) {
-	$calcPath = '';
-	$validPath = '';
-	
-	foreach($paths as $p) {
-		$calcPath .= '/' . $p;
-		if (isset($pathRAMLArray[$calcPath])) {
-			$validPath = $calcPath;
-		} elseif ($validPath) {
-			return array('path' => $validPath, 'array' => $paths);
-		}
-		array_shift($paths);
-		
-		if (!$paths && isset($pathRAMLArray[$calcPath])) {
-			return array('path' => $validPath, 'array' => $paths);
-		}
-	}
-	
-	return array('path' => false, 'array' => array());
-}
-
-
-$RAML = generateResource($RAMLarray);
-$RAML->currentResource = $RAML;
-$RAML->currentAction = false;
-
-if (!empty($_GET['action']) && in_array($_GET['action'], $RAMLactionVerbs)) {
-	$RAML->currentAction = $_GET['action'];
-}
-
-// Kill for security purposes
-unset($_GET['action']);
-
-if (!empty($_GET['path']) && $_GET['path'] != '/') {
-	$pathRAMLArray = $RAMLarray;
-
-	$paths = explode('/', $_GET['path']);
-	if (empty($paths[0])) { array_shift($paths); }
-	
-	$pathRAMLArray = $RAML->resources;
-	while ($paths) {
-		$tmp = findPath($pathRAMLArray, $paths);
-		if (!empty($tmp['path'])) {
-			$pathRAMLArray = $pathRAMLArray[$tmp['path']];
-			$paths = $tmp['array'];
-		} else {
-			$pathRAMLArray = false;
-			break;
-		}
-	}
-	
-	if (!$pathRAMLArray) {
-		$RAML->currentResource = generateResource(array());
-	} else {
-		$RAML->currentResource = generateResource($pathRAMLArray);
-	}
-	
-}
-
-
-if ($RAML->currentResource->is) {
-	foreach ($RAML->currentResource->is as $v) {
-		if (!isset($RAML->currentResource->$v)) {
-			$RAML->currentResource->$v = $RAML->traits[$v];
-		}
-	}
-}
-
-// Clear Temp Trait Data
-unset($RAML->traits, $RAML->is, $RAML->currentResource->traits, $RAML->currentResource->is);
-
-
-$RAML->currentResource->path = !empty($_GET['path']) ? $_GET['path'] : '/';
-$RAML->currentResource->pathSafe = $RAML->currentResource->path;
-
-if (substr($RAML->currentResource->pathSafe, -1) == '/') {
-	$RAML->currentResource->pathSafe = substr($RAML->currentResource->pathSafe, 0, -1);
+if (isset($_GET['action']) && $RAML->isActionValid($_GET['action'])) {
+	$RAML->setCurrentAction($_GET['action']);
+	unset($_GET['action']);
 }
 
 require_once($docsTheme);
