@@ -48,11 +48,9 @@ class RAML extends RAMLDataObject
 		foreach ($value as $skey => $svalue) {
 			if (is_array($svalue) && substr($skey, 0, 1) == '/') {
 				$this->paths[$key]->addChild($key . $skey, $skey);
-				var_dump($this->paths[$key]->getChildren());
 				$this->generatePathData($key . $skey, $svalue);
 				unset($value[$skey]);
 			} elseif ($skey == 'is') {
-				/*
 				if (is_array($svalue)) {
 					foreach($svalue as $ivalue) {
 						if (!isset($value[$ivalue])) {
@@ -68,7 +66,6 @@ class RAML extends RAMLDataObject
 						$value[$svalue] = array_merge($value[$svalue], $this->traits[$svalue]);
 					}
 				}
-				*/
 			} elseif (in_array($skey, $this->verbs)) {
 				$this->paths[$key]->addVerb($skey);
 				unset($value[$skey]);
