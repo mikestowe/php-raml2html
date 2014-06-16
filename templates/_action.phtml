@@ -95,15 +95,18 @@
 	
 	<?php 
 		foreach ($responses as $response) {
-			if (!$response['example']) {
+			if (in_array($response['type'], array('example', 'schema'))) {
 				continue;
 			}
 			 
 			echo '<tt>' . $response['type'] . '</tt>';
+			
+			if (isset($response['example'])):
 	?>
 	<div class="apiresponse">
 			<?php echo formatResponse($response['example']); ?>
 	</div>
+	<?php endif; ?>
 	<p>&nbsp;</p>
 	<?php
 		}

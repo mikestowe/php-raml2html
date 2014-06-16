@@ -9,6 +9,7 @@ class RAML extends RAMLDataObject
 	private $verbs = array();
 	private $paths = array();
 	private $traits = array();
+	private $base = array();
 	private $currentPath = '/';
 	private $currentVerb = null;
 	
@@ -26,18 +27,43 @@ class RAML extends RAMLDataObject
 	{
 		$this->paths['/'] = new RAMLPathObject($this, '/');
 		
+		// Handle Base Data
 		foreach ($array as $key => $value) {
 			if (is_array($value) && substr($key, 0, 1) == '/') {
-				$this->paths['/']->addChild('/' . $key, $key);
-				$this->generatePathData($key, $value);
+				continue;
+			} elseif ($key == 'resourceTypes') {
+				$this->base = $value[0]['base'];
 			} elseif ($key == 'traits') {
 				$this->traits[key($value)] = $value[(key($value))];
-			} elseif (in_array($key, $this->verbs)) {
+			} elseif (in_array(strtoupper($key), $this->verbs)) {
 				$this->paths[$key]->addVerb($key);
 				$this->set(strtoupper($key), $value);
 			} else {
 				$this->set($key, $value);
 			}
+			
+			unset($array[$key]);
+		}
+		
+		foreach ($this->base as $key => $value) {
+			$cleanKey = str_replace('?', '', $key);
+			if (in_array($cleanKey, $this->verbs)) {
+				$cleanKey = strtoupper($cleanKey);
+				$cleanV = array();
+				foreach ($value['responses'] as $k => $v) {
+					$cleanV['c' . $k] = $v;
+				}
+				unset($value['responses']);
+				$value['responses'] = $cleanV;
+			}
+			unset($this->base[$key]);
+			$this->base[$cleanKey] = $value;
+		}
+		
+		// Handle Paths
+		foreach ($array as $key => $value) {
+			$this->paths['/']->addChild('/' . $key, $key);
+			$this->generatePathData($key, $value);
 		}
 	}
 	
@@ -68,11 +94,21 @@ class RAML extends RAMLDataObject
 				}
 			} elseif (in_array($skey, $this->verbs)) {
 				$this->paths[$key]->addVerb($skey);
+				$cleanV = array();
+				foreach ($svalue['responses'] as $k => $v) {
+					$cleanV['c' . $k] = $v;
+				}
+				unset($svalue['responses']);
+				$svalue['responses'] = $cleanV;
 				unset($value[$skey]);
 				$value[strtoupper($skey)] = $svalue;
 			}
 		}
 		
+		$value = array_merge_recursive($value, $this->base);
+		if ($key == '/direct_messages{mediaTypeExtension}') {
+			//var_dump($value); die();
+		}
 		$this->paths[$key]->setData($value);
 	}
 	

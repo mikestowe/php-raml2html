@@ -51,9 +51,15 @@ class RAMLPathObject extends RAMLDataObject
 	// Handle Responses More Effectively
 	public function getResponses()
 	{
-		$responses = array();	
-		
+		$responses = array();
+
 		foreach ($this->getActionProperties()->get('responses')->toArray() as $code => $value) {
+			$code = ltrim($code, 'c');
+			
+			if (isset($value['description']) && count($value) == 1) {
+				$responses[$code][] = array('type' => $value['description']);
+			}
+			
 			if (isset($value['body']['example'])) {
 				$responses[$code][] = array('type' => 'Standard Response', 'example' => $value['body']['example'], 'schema' => array());
 			} 
@@ -65,6 +71,7 @@ class RAMLPathObject extends RAMLDataObject
 			if (isset($value['body']['application/json']) && is_string($value['body']['application/xml'])) {
 				$responses[$code][] = array('type' => 'application/xml', 'example' => $value['body']['application/xml']);
 			} else {
+				$t = 0;
 				foreach ($value['body'] as $rkey => $rvalue) {
 					$rexample = isset($rvalue['example']) ? $rvalue['example'] : null;
 					$rschema = isset($rvalue['schema']) ? $rvalue['schema'] : null;
