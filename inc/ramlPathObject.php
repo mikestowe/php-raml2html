@@ -25,8 +25,8 @@ class RAMLPathObject extends RAMLDataObject
 	
 	public function addChild($absolutePath, $relativePath)
 	{
-		$absolutePath = str_replace('//', '/', $absolutePath);
-		$relativePath = str_replace('//', '/', $relativePath);
+		$absolutePath = $this->master->handlePlaceHolders(str_replace('//', '/', $absolutePath));
+		$relativePath = $this->master->handlePlaceHolders(str_replace('//', '/', $relativePath));
 		$this->children[$absolutePath] = $relativePath;
 		return $this;
 	}

@@ -69,12 +69,16 @@ class RAML extends RAMLDataObject
 	
 	
 	public function generatePathData($key, $value) {
+		$key = $this->handlePlaceHolders($key);
+		
 		$this->paths[$key] = new RAMLPathObject($this, $key);
 		
 		foreach ($value as $skey => $svalue) {
+			$skey = $this->handlePlaceHolders($skey);
+			
 			if (is_array($svalue) && substr($skey, 0, 1) == '/') {
-				$this->paths[$key]->addChild($key . $skey, $skey);
-				$this->generatePathData($key . $skey, $svalue);
+				$this->paths[$key]->addChild($this->formatParentPath($key) . $skey, $skey);
+				$this->generatePathData($this->formatParentPath($key) . $skey, $svalue);
 				unset($value[$skey]);
 			} elseif ($skey == 'is') {
 				if (is_array($svalue)) {
@@ -201,6 +205,26 @@ class RAML extends RAMLDataObject
 	public function path()
 	{
 		return $this->getPathObject($this->getCurrentPath());
+	}
+	
+	public function formatParentPath($string)
+	{
+		return preg_replace('/\.[a-z]{3,4}$/i', '', $string);
+	}
+	
+	public function handlePlaceHolders($string)
+	{
+		if (is_string($string) && preg_match('/.*({(.+)}).*/', $string, $matches)) {
+			if ($this->get($matches[2])) {
+				$t = str_replace($matches[1], $this->get($matches[2]), $string);
+				return $t;
+			} elseif ($this->get('base') && $this->get('base')->get($matches[2])) {
+				$t = str_replace($matches[1], $this->get('base')->get($matches[2]), $string);
+				return $t;
+			}
+		}
+		
+		return $string;
 	}
 
 	

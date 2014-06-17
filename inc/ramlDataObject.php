@@ -35,18 +35,9 @@ class RAMLDataObject
 			// shoudl return false
 		} elseif (is_array($this->data[$dataKey])) {
 			$t = new RAMLDataObject($this->data[$dataKey]);
-			$t->setMaster($this);
+			$t->setMaster($this->master);
 			return $t;
 			// convert to preg_match_all
-		} elseif (is_string($this->data[$dataKey]) && preg_match('/.*({(.+)}).*/', $this->data[$dataKey], $matches)) {
-			if ($this->master->get($matches[2])) {
-				$t = str_replace($matches[1], $this->master->get($matches[2]), $this->data[$dataKey]);
-				return $t;
-			} elseif ($this->master->get('base') && $this->master->get('base')->get($matches[2])) {
-				echo 'here';
-				$t = str_replace($matches[1], $this->master->get('base')->get($matches[2]), $this->data[$dataKey]);
-				return $t;
-			}
 		} elseif (is_string($this->data[$dataKey]) && preg_match('/^\!include ([a-z_\.\/]+)/i', $this->data[$dataKey], $matches)) {
 			$ext = array_pop(explode('.', $matches[1]));
 			if (in_array($ext, 'yaml', 'raml')) {
@@ -58,7 +49,7 @@ class RAMLDataObject
 			return file_get_contents($matches[1]);
 		}
 		
-		return $this->data[$dataKey];
+		return $this->master->handlePlaceHolders($this->data[$dataKey]);
 	}
 	
 	public function toArray()
