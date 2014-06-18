@@ -110,9 +110,7 @@ class RAML extends RAMLDataObject
 		}
 		
 		$value = array_merge_recursive($value, $this->base);
-		if ($key == '/direct_messages{mediaTypeExtension}') {
-			//var_dump($value); die();
-		}
+		
 		$this->paths[$key]->setData($value);
 	}
 	
