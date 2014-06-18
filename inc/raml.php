@@ -14,7 +14,12 @@ class RAML extends RAMLDataObject
 	private $currentVerb = null;
 	
 	
-	
+	/**
+	 * Constructing Method
+	 * Setups class properties
+	 * @param array $verbs
+	 * @return void
+	 */
 	public function __construct($verbs = array())
 	{
 		$this->setMaster($this);
@@ -23,6 +28,12 @@ class RAML extends RAMLDataObject
 	}
 	
 	
+	/**
+	 * Build RAML Object from Array
+	 * Used to take a parsed array and build the RAML Object
+	 * @param array $array
+	 * @return void
+	 */
 	public function buildFromArray($array)
 	{
 		$this->paths['/'] = new RAMLPathObject($this, '/');
@@ -68,6 +79,13 @@ class RAML extends RAMLDataObject
 	}
 	
 	
+	/**
+	 * Generata Path Data
+	 * Build Path Objects
+	 * @param string $key
+	 * @param mixed $value
+	 * @return void
+	 */
 	public function generatePathData($key, $value) {
 		$key = $this->handlePlaceHolders($key);
 		
@@ -115,23 +133,48 @@ class RAML extends RAMLDataObject
 	}
 	
 	
+	/**
+	 * Dump
+	 * Debug Method - TBR
+	 * @return array
+	 */
 	public function dump()
 	{
 		var_dump($this->paths);
 	}
 	
 	
+	/**
+	 * SetVerbs
+	 * Sets the list of allowable verbs
+	 * @param array $verbs
+	 * @return RAML
+	 */
 	public function setVerbs(array $verbs)
 	{
 		array_change_key_case ($verbs, ARRAY_KEY_UPPERCASE);
 		$this->verbs = $verbs;
+		return $this;
 	}
 	
+	
+	/**
+	 * GetVerbs
+	 * Returns a list of allowable verbs
+	 * @return array
+	 */
 	public function getVerbs()
 	{
 		return $this->verbs;
 	}
 	
+	
+	/**
+	 * IsActionValid
+	 * Returns whether or not an action can be performed on a path
+	 * @param string $action
+	 * @return bool
+	 */
 	public function isActionValid($action)
 	{
 		// Path must be valid before testing action
@@ -146,6 +189,13 @@ class RAML extends RAMLDataObject
 		return false;
 	}
 	
+	
+	/**
+	 * SetCurrentAction
+	 * Sets the Current Action for use by RAML Object
+	 * @param string
+	 * @return RAML
+	 */
 	public function setCurrentAction($action)
 	{
 		if ($this->isActionValid($action)) {
@@ -156,21 +206,47 @@ class RAML extends RAMLDataObject
 		throw new Exception('Invalid Verb');
 	}
 	
+	
+	/**
+	 * GetCurrentAction
+	 * Returns the current action as set by setCurrentAction
+	 * @return string
+	 */
 	public function getCurrentAction()
 	{
 		return $this->currentVerb;
 	}
 	
+	
+	/**
+	 * Action
+	 * Shortcut for accessing the CurrentAction Object
+	 * @return RAMLDataObject
+	 */
 	public function action()
 	{
 		return $this->path()->get($this->getCurrentAction());
 	}
 	
+	
+	/**
+	 * IsPathValid
+	 * Determines whether or not a path is valid
+	 * @param string $path
+	 * @return bool
+	 */
 	public function isPathValid($path)
 	{
 		return isset($this->paths[$path]);
 	}
 	
+	
+	/**
+	 * GetPathObject
+	 * Gets a RAMLPathObject for the defined Path
+	 * @param string $path
+	 * @return RAMLPathObject | bool
+	 */
 	public function getPathObject($path)
 	{
 		if (isset($this->paths[$path])) {
@@ -179,37 +255,72 @@ class RAML extends RAMLDataObject
 		return false;
 	}
 	
-	public function currentPath()
-	{
-		return $this->getPathObject($this->getCurrentPath());
-	}
 	
+	/**
+	 * SetCurrentPath
+	 * Set the current path
+	 * @param string
+	 * @return RAML
+	 */
 	public function setCurrentPath($path)
 	{
 		$this->currentPath = $path;
 		return $this;
 	}
 	
+	
+	/**
+	 * GetCurrentPath
+	 * Returns the current path as defined in string type
+	 * @return string
+	 */
 	public function getCurrentPath()
 	{
 		return $this->currentPath;
 	}
 	
+	
+	/**
+	 * GetChildPaths
+	 * Returns a paths children paths as strings
+	 * @param string $path
+	 * @return array
+	 */
 	public function getChildPaths($path)
 	{
 		return $this->paths[$path]->getChildren();
 	}
 	
+	
+	/**
+	 * Path
+	 * Gets the current path object
+	 * @return RAMLPathObject
+	 */
 	public function path()
 	{
 		return $this->getPathObject($this->getCurrentPath());
 	}
 	
+	
+	/**
+	 * FormatParentPath
+	 * Removes unwanted extensions from parent path
+	 * @param string
+	 * @return string
+	 */
 	public function formatParentPath($string)
 	{
 		return preg_replace('/\.[a-z]{3,4}$/i', '', $string);
 	}
 	
+	
+	/**
+	 * HandlePlaceHolders
+	 * Replaces {} with defined text
+	 * @param string
+	 * @return string
+	 */
 	public function handlePlaceHolders($string)
 	{
 		if (is_string($string) && preg_match('/.*({(.+)}).*/', $string, $matches)) {
@@ -224,7 +335,4 @@ class RAML extends RAMLDataObject
 		
 		return $string;
 	}
-
-	
-	
 }
