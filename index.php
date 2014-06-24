@@ -29,7 +29,7 @@ if ($cacheTimeLimit && function_exists('apc_fetch')) {
 
 if (!$RAML) {
 	$RAMLarray = spyc_load(file_get_contents($RAMLsource));
-	$RAML = new RAML($RAMLactionVerbs);
+	$RAML = new RAML\RAML($RAMLactionVerbs);
 	$RAML->buildFromArray($RAMLarray);
 	
 	if ($cacheTimeLimit && function_exists('apc_store')) {
