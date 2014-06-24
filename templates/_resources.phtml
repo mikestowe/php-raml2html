@@ -1,13 +1,14 @@
 <h3>Available Endpoints</h3>
+	
 <ul class="resources">
-	<?php foreach ($RAML->path()->getChildren() as $abspath => $endpoint) { ?> 
+	<?php foreach ($RAML->currentResource->resources as $endpoint => $resource) { ?>
 	<li>
 		<div style="float: left; width: 150px;">
-			<a href="<?php echo $_SERVER['PHP_SELF']; ?>?path=<?php echo $abspath; ?>"><?php echo $endpoint; ?></a>
+			<a href="<?php echo $_SERVER['PHP_SELF']; ?>?path=<?php echo $RAML->currentResource->pathSafe . $endpoint; ?>"><?php echo $endpoint; ?></a>
 		</div>
 		
 		<div style="float: left;">
-			<?php echo $RAML->getPathObject($abspath)->get('description'); ?>
+			<?php echo $resource['description']; ?>
 		</div>
 		
 		<br style="clear: both;" />

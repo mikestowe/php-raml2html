@@ -1,19 +1,19 @@
 <br style="clear: both;" />
 
 <div style="float: left;">
-	<span class="badge badge_<?php echo $RAML->getCurrentAction(); ?>"><?php echo $RAML->getCurrentAction(); ?></span>
+	<span class="badge badge_<?php echo $RAML->currentAction; ?>"><?php echo $RAML->currentAction; ?></span>
 </div>
 
 <div style="float: left;">
-	<strong style="display: inline-block; font-size: 14px; padding-top: 5px;" class="text_<?php echo $RAML->getCurrentAction(); ?>"><?php echo $RAML->baseUri . $RAML->getCurrentPath(); ?></strong>
+	<strong style="display: inline-block; font-size: 14px; padding-top: 5px;" class="text_<?php echo $RAML->currentAction; ?>"><?php echo $RAML->baseUri . $RAML->currentResource->path; ?></strong>
 </div>
 
 <br style="clear: both;" />
 
-<p style="margin-top: 30px;"><?php echo $RAML->action()->get('description'); ?></p>
+<p style="margin-top: 30px;"><?php echo $RAML->currentResource->verbs[$RAML->currentAction]['description']; ?></p>
 
 
-<?php if ($RAML->action()->get('queryParameters')->isArray()): ?>
+<?php if ($RAML->currentResource->verbs[$RAML->currentAction]['queryParameters']): ?>
 	<h3>Query Parameters</h3>
 	<table>
 		<thead>
@@ -23,7 +23,7 @@
 		</thead>
 		
 		<?php
-		foreach ($RAML->action()->get('queryParameters')->toArray() as $param => $details) {
+		foreach ($RAML->currentResource->verbs[$RAML->currentAction]['queryParameters'] as $param => $details) {
 		?>
 		
 			<tr>
@@ -36,7 +36,7 @@
 <?php endif; ?>
 
 
-<?php if ($RAML->action()->get('body')->get('application/x-www-form-urlencoded')->get('formParameters')->isArray()): ?>
+<?php if ($RAML->currentResource->verbs[$RAML->currentAction]['body']['application/x-www-form-urlencoded']['formParameters']): ?>
 <h3>Form Parameters</h3>
 <table>
 	<thead>
@@ -46,7 +46,7 @@
 	</thead>
 	
 	<?php
-	foreach ($RAML->action()->get('body')->get('application/x-www-form-urlencoded')->get('formParameters')->toArray() as $param => $details) {
+	foreach ($RAML->currentResource->verbs[$RAML->currentAction]['body']['application/x-www-form-urlencoded']['formParameters'] as $param => $details) {
 	?>
 	
 		<tr>
@@ -59,7 +59,7 @@
 <?php endif; ?>
 
 
-<?php if ($RAML->action()->get('body')->get('application/json')->get('schema')->get('properties')->isArray()): ?>
+<?php if (isset($RAML->currentResource->verbs[$RAML->currentAction]['body']['application/json']['schema']['properties'])): ?>
 <h3>JSON Parameters</h3>
 <table>
 	<thead>
@@ -69,9 +69,9 @@
 	</thead>
 	
 	<?php
-	$tmp = $RAML->action()->get('body')->get('application/json')->get('schema')->toArray();
-	if ($RAML->action()->get('body')->get('application/json')->get('schema')->isString()) {
-		$tmp = json_decode($RAML->action()->get('body')->get('application/json')->get('schema')->toString(), true);
+	$tmp = $RAML->currentResource->verbs[$RAML->currentAction]['body']['application/json']['schema'];
+	if (is_string($RAML->currentResource->verbs[$RAML->currentAction]['body']['application/json']['schema'])) {
+		$tmp = json_decode($RAML->currentResource->verbs[$RAML->currentAction]['body']['application/json']['schema'], true);
 	}
 	
 	foreach ($tmp['properties'] as $param => $details) {
@@ -89,41 +89,31 @@
 
 
 <h3>Response</h3>
-
-<?php foreach ($RAML->path()->getResponses() as $code => $responses) { ?>
-	<tt><strong><?php echo $code; ?>:</strong></tt><br /><br />
-	
-	<?php 
-		foreach ($responses as $response) {
-			if (in_array($response['type'], array('example', 'schema'))) {
-				continue;
-			}
-			 
-			echo '<tt>' . $response['type'] . '</tt>';
-			
-			if (isset($response['example'])):
-	?>
+<?php
+foreach ($RAML->currentResource->verbs[$RAML->currentAction]['responses'] as $code => $response) {
+?>
+	<tt><strong><?php echo $code; ?>:</strong> <?php echo isset($response['description']) ? $response['description'] : ''; ?></tt>
+	<?php if (isset($response['body']['example'])): ?>
 	<div class="apiresponse">
-			<?php echo formatResponse($response['example']); ?>
+			<?php echo formatResponse($response['body']['example']); ?>
 	</div>
-	<?php endif; ?>
 	<p>&nbsp;</p>
-	<?php
-		}
-	} ?>
+	<?php endif; ?>
+<?php
+}
+?>
 
-
-
-<?php if (count($RAML->path()->getVerbs()) > 1): ?>
+<?php if (count($RAML->currentResource->verbs) > 1): ?>
 	<h3>Other Endpoint Actions</h3>
 	<?php
-	foreach ($RAML->path()->getVerbs() as $verb) {
-		if ($verb == $RAML->getCurrentAction()) {
+	foreach ($RAML->currentResource->verbs as $verb => $resource) {
+		if ($verb == $RAML->currentAction) {
 			continue;
 		}
 	?>
 	<div style="float: left;">
-		<a href="<?php echo $_SERVER['PHP_SELF']; ?>?path=<?php echo $RAML->getCurrentPath(); ?>&action=<?php echo $verb; ?>" class="badge badge_<?php echo $verb; ?>"><?php echo $verb; ?></a>
+		<a href="<?php echo $_SERVER['PHP_SELF']; ?>?path=<?php echo $RAML->currentResource->path; ?>&action=<?php echo $verb; ?>" class="badge badge_<?php echo $verb; ?>"><?php echo $verb; ?></a>
 	</div>
+	
 	<?php } ?>
 <?php endif; ?>

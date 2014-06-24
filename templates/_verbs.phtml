@@ -1,14 +1,14 @@
 <h3>Available Actions</h3>
 
 <ul class="verbs">
-	<?php foreach ($RAML->path()->getVerbs() as $verb) { ?>
+	<?php foreach ($RAML->currentResource->verbs as $verb => $resource) { ?>
 	<li>
 		<div style="display: inline-block;">
-			<a href="<?php echo $_SERVER['PHP_SELF']; ?>?path=<?php echo $RAML->getCurrentPath(); ?>&action=<?php echo $verb; ?>" class="badge badge_<?php echo $verb; ?>"><?php echo $verb; ?></a>
+			<a href="<?php echo $_SERVER['PHP_SELF']; ?>?path=<?php echo $RAML->currentResource->path; ?>&action=<?php echo $verb; ?>" class="badge badge_<?php echo $verb; ?>"><?php echo $verb; ?></a>
 		</div>
 		
 		<div style="float: display: inline-block; margin: -26px 0 0 90px;">
-			<?php echo $RAML->path()->get($verb)->get('description'); ?>
+			<?php echo $resource['description']; ?>
 		</div>
 		<br style="clear: both;" />
 	</li>

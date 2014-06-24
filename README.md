@@ -2,12 +2,8 @@
 
 RAML 2 HTML for PHP is a simple application that makes use of multiple templates to allow you to build and customize your API Docs using RAML.
 
-![Screenshot](http://www.mikestowe.com/wp-content/uploads/2014/05/raml2html.png)
-
 #### What version of PHP does RAML 2 HTML require?
-RAML 2 HTML for PHP versions less than 1.0 can be run on any server with PHP 5 or greater.
-
-RAML 2 HTML for PHP versions 1.0 or greater require PHP 5.3+
+You can run RAML 2 PHP on any server running PHP 5.3 or greater.
 
 #### How do I set it up?
 Important setup information is stored in config.php.  You can read setup instructions [here](http://www.mikestowe.com/2014/05/raml-2-html.php).
