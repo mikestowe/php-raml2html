@@ -14,35 +14,45 @@ require_once('inc/raml.php');
 require_once('inc/ramlPathObject.php');
 require_once('config.php');
 
-$RAMLarray = false;
-if ($cacheTimeLimit && function_exists('apc_fetch')) {
-	$RAMLarray = apc_fetch('RAML' . md5($RAMLsource));
-}
 
-if (!$RAMLarray) {
-	$RAMLarray = spyc_load(file_get_contents($RAMLsource));
-	if ($cacheTimeLimit && function_exists('apc_store')) {
-		apc_store('RAML' . md5($RAMLsource), $RAMLarray, $cacheTimeLimit);
-	}
-}
-
+// Dangling Function
 function formatResponse($text) {	
 	return str_replace(array(" ", "\n"), array("&nbsp;", "<br />"), htmlentities($text));
 }
 
-$RAML = new RAML($RAMLactionVerbs);
-$RAML->buildFromArray($RAMLarray);
 
+// Handle Caching and Build
+$RAML = false;
+if ($cacheTimeLimit && function_exists('apc_fetch')) {
+	$RAML = apc_fetch('RAML' . md5($RAMLsource));
+}
+
+if (!$RAML) {
+	$RAMLarray = spyc_load(file_get_contents($RAMLsource));
+	$RAML = new RAML($RAMLactionVerbs);
+	$RAML->buildFromArray($RAMLarray);
+	
+	if ($cacheTimeLimit && function_exists('apc_store')) {
+		apc_store('RAML' . md5($RAMLsource), $RAML, $cacheTimeLimit);
+	}
+}
+
+
+// Set Current Path
 if (isset($_GET['path'])) {
 	$RAML->setCurrentPath($_GET['path']);
 	unset($_GET['path']);
 }
 
+
+// Set Current Action
 if (isset($_GET['action']) && $RAML->isActionValid($_GET['action'])) {
 	$RAML->setCurrentAction($_GET['action']);
 	unset($_GET['action']);
 }
 
+
+// Render Template
 require_once($docsTheme);
 
 ?>
