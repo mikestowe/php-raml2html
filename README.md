@@ -1,4 +1,4 @@
-# RAML 2 HTML for PHP
+# RAML 2 HTML for PHP v0.2
 
 RAML 2 HTML for PHP is a simple application that makes use of multiple templates to allow you to build and customize your API Docs using RAML.
 
