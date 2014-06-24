@@ -3,7 +3,7 @@
 <ul>
 	<li><a href="<?php echo $_SERVER['PHP_SELF']; ?>?path=/">Index</a></li>
 	
-	<?php foreach ($RAML->resources as $endpoint => $resource) { ?>
+	<?php foreach ($RAML->getChildPaths('/') as $endpoint => $resource) { ?>
 	<li><a href="<?php echo $_SERVER['PHP_SELF']; ?>?path=<?php echo $endpoint; ?>"><?php echo $endpoint; ?></a></li>
 	<?php } ?>
 </ul>

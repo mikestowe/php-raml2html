@@ -1,6 +1,6 @@
 <html>
 	<head>
-		<title><?php echo $RAML->title; ?>: <?php echo $RAML->currentResource->path; ?></title>
+		<title><?php echo $RAML->title; ?>: <?php echo $RAML->getCurrentPath(); ?></title>
 		
 		<style type="text/css">
 		
@@ -197,36 +197,38 @@
 
 	<body>
 		<header>
-			<h1><a href="<?php echo $_SERVER['PHP_SELF']; ?>"><?php echo $RAML->title; ?></a></h1>
-			<p>version <?php echo $RAML->version; ?> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <?php echo $RAML->baseUri; ?></p>
+			<h1><a href="<?php echo $_SERVER['PHP_SELF']; ?>"><?php echo $RAML->get('title'); ?></a></h1>
+			<p>version <?php echo $RAML->get('version'); ?> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <?php echo $RAML->get('baseUri'); ?></p>
 		</header>
 		
 		
 		<div id="container">
 		
-			<article>
-			
-				<?php if ($RAML->currentResource->path != '/'): ?>
-					<h2><?php echo $RAML->currentResource->path; ?></h2>
-				<?php elseif (!$RAML->currentResource->description): ?>
+			<article>		
+				<?php if ($RAML->getCurrentPath() != '/'): ?>
+					<h2><?php echo $RAML->getCurrentPath(); ?></h2>
+				<?php elseif (!$RAML->path()->description): ?>
 					<!-- CSS HACK --><img width="1" height="1" />
 				<?php endif; ?>
 				
 				
-				<?php if(empty($RAML->currentAction) && $RAML->currentResource->description):
-					echo $RAML->currentResource->description; 
+				<?php $validPath = $RAML->isPathValid($RAML->getCurrentPath()); ?>
+				
+				
+				<?php if($validPath && !$RAML->getCurrentAction() && $RAML->path()->description):
+					echo $RAML->path()->description; 
 				endif; ?>
 				
 				
 				<?php
-				if (!$RAML->currentResource->exists && !$RAML->currentAction):
+				if (!$validPath):
 					include('_404.phtml');
 				endif;
 				?>
 				
 				
 				<?php 
-				if ($RAML->currentResource->verbs && !$RAML->currentAction):
+				if ($validPath && $RAML->path()->getVerbs() && !$RAML->getCurrentAction()):
 					include('_verbs.phtml');
 				endif;
 				?>
@@ -234,14 +236,14 @@
 				
 				
 				<?php 
-				if ($RAML->currentResource->resources && !$RAML->currentAction):
+				if ($validPath && $RAML->getChildPaths($RAML->getCurrentPath()) && !$RAML->getCurrentAction()):
 					include('_resources.phtml');
 				endif;
 				?>
 				
 				
 				<?php
-				if ($RAML->currentAction):
+				if ($RAML->getCurrentAction()):
 					include('_action.phtml');
 				endif;
 				?>
@@ -252,9 +254,7 @@
 				
 			<nav>
 				<?php 
-				if ($RAML->resources): 
-					include('_menu.phtml');
-				endif; 
+				include('_menu.phtml');
 				?>
 			</nav>
 
