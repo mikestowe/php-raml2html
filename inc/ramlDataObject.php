@@ -19,26 +19,64 @@ class RAMLDataObject
 	protected $master;
 	private $data = array();
 	
+	
+	/**
+	 * Construct
+	 * @param array $data
+	 * @return void
+	 */
 	public function __construct(array $data = array())
 	{
 		$this->data = $data;
 	}
 	
+	
+	/**
+	 * Set Master
+	 * Sets the Master Object (RAML)
+	 * @param RAML $master
+	 * @return RAMLDataObject
+	 */
 	public function setMaster($master)
 	{
 		$this->master = $master;
+		return $this;
 	}
 	
+	
+	/**
+	 * Set Data
+	 * Sets the data
+	 * @param array $data
+	 * @return RAMLDataObject
+	 */
 	public function setData(array $data = array())
 	{
 		$this->data = $data;
+		return $this;
 	}
 	
+	
+	/**
+	 * Set
+	 * Set a key, value pair
+	 * @param string $key
+	 * @param mixed  $value
+	 * @return RAMLDataObject
+	 */
 	public function set($key, $value)
 	{
 		$this->data[$key] = $value;
+		return $this;
 	}
 	
+	
+	/**
+	 * Get
+	 * Get Value based on Key
+	 * @param string $dataKey
+	 * @return mixed
+	 */
 	public function get($dataKey)
 	{
 		if (!isset($this->data[$dataKey])) {
@@ -67,16 +105,34 @@ class RAMLDataObject
 		return $this->master->handlePlaceHolders($this->data[$dataKey]);
 	}
 	
+	
+	/**
+	 * To Array
+	 * returns a data object as an array
+	 * @return array
+	 */
 	public function toArray()
 	{
 		return $this->data;
 	}
 	
+	
+	/**
+	 * To String
+	 * return a value string
+	 * @return string
+	 */
 	public function toString()
 	{
 		return (string) current($this->data);
 	}
 	
+	
+	/**
+	 * Is Array
+	 * returns a bool as to whether or not the data type is an array
+	 * @return bool
+	 */
 	public function isArray()
 	{
 		if (count($this->data) > 1) {
@@ -85,6 +141,12 @@ class RAMLDataObject
 		return false;
 	}
 	
+	
+	/**
+	 * Is String
+	 * returns a bool as to whether or not the data type is a string
+	 * @return bool
+	 */
 	public function isString()
 	{
 		if (count($this->data) == 1 && is_string(current($this->data))) {
@@ -93,6 +155,12 @@ class RAMLDataObject
 		return false;
 	}
 	
+	
+	/**
+	 * Is Int
+	 * returns a bool as to whether or not the data type is an Int
+	 * @return bool
+	 */
 	public function isInt()
 	{
 		if (count($this->data) == 1 && is_int(current($this->data))) {
@@ -101,16 +169,37 @@ class RAMLDataObject
 		return false;
 	}
 	
+	
+	/**
+	 * Get
+	 * Get Value based on Key
+	 * @param string $dataKey
+	 * @return mixed
+	 */
 	public function __get($key)
 	{
 		return $this->get($key);
 	}
 	
+	
+	/**
+	 * Set
+	 * Set a key, value pair
+	 * @param string $key
+	 * @param mixed  $value
+	 * @return RAMLDataObject
+	 */
 	public function __set($key, $value) 
 	{
 		$this->set($key, $value);
 	}
 	
+	
+	/**
+	 * To String
+	 * return a value string
+	 * @return string
+	 */
 	public function __toString()
 	{
 		return $this->toString();

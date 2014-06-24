@@ -21,6 +21,12 @@ class RAMLPathObject extends RAMLDataObject
 	private $children = array();
 	private $verbs = array();
 	
+	
+	/**
+	 * Construct
+	 * @param array $data
+	 * @return void
+	 */
 	public function __construct($master, $path)
 	{
 		$this->master = $master;
@@ -28,16 +34,36 @@ class RAMLPathObject extends RAMLDataObject
 		parent::__construct();
 	}
 	
+	
+	/**
+	 * Get Properties
+	 * Get Path Object Properties
+	 * @return RAMLPathObject
+	 */
 	private function getProperties()
 	{
 		return $this->master->getPathObject($this->path);
 	}
 	
+	
+	/**
+	 * Get Action Properties
+	 * Get the current Action Object
+	 * @return RAMLDataObject
+	 */
 	private function getActionProperties()
 	{
 		return $this->master->action();
 	}
 	
+	
+	/**
+	 * Add Child
+	 * Add a Child to the Path Object
+	 * @param string $absolutePath
+	 * @param string $relativePath
+	 * @return RAMLPathObject
+	 */
 	public function addChild($absolutePath, $relativePath)
 	{
 		$absolutePath = $this->master->handlePlaceHolders(str_replace('//', '/', $absolutePath));
@@ -46,24 +72,47 @@ class RAMLPathObject extends RAMLDataObject
 		return $this;
 	}
 	
+	
+	/**
+	 * Get Children
+	 * Returns a Path Objects Child Paths
+	 * @return array
+	 */
 	public function getChildren()
 	{
 		return $this->children;
 	}
 	
 	
+	/**
+	 * Add Verb
+	 * Adds a Verb/ Action to the RAMLPathObject
+	 * @param string $key
+	 * @return RAMLPathObject
+	 */
 	public function addVerb($key)
 	{
 		$this->verbs[] = strtoupper($key);
+		return $this;
 	}
 	
+	
+	/**
+	 * Get Verbs
+	 * Return a list of Verbs 
+	 * @return array
+	 */
 	public function getVerbs()
 	{
 		return $this->verbs;
 	}
 	
 	
-	// Handle Responses More Effectively
+	/**
+	 * Get Responses
+	 * Returns a list of responses (XML, JSON, etc) for an endpoint
+	 * @return array
+	 */
 	public function getResponses()
 	{
 		$responses = array();
@@ -97,6 +146,5 @@ class RAMLPathObject extends RAMLDataObject
 			
 		return $responses;
 	}
-	
 	
 }
