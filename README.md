@@ -14,7 +14,7 @@ Yes!  You can find the latest stable demo and the latest development version dem
 #### Does it support all RAML features?
 Not yet.  Version 0.2 was really a proof of concept, and supports basic level includes and traits.  
 
-Version 1.0 (in development) is a complete rewrite of the engine and is designed to support base, path variables, multi-level includes, traits, and more.  Please note templates are NOT backwards compatible with previous versions (due to the OO syntax).
+[Version 1.0](https://github.com/mikestowe/php-raml2html/tree/Version_1.0) (in development) is a complete rewrite of the engine and is designed to support base, path variables, multi-level includes, traits, and more.  Please note templates are NOT backwards compatible with previous versions (due to the OO syntax).
 
 As RAML 2 HTML for PHP gets used more and we find out what other features people want, we will be building those in as well.  But it is a work in progress.
 
