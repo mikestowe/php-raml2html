@@ -1,4 +1,19 @@
 <?php
+/**
+  * RAML2HTML for PHP -- A Simple API Docs Script for RAML & PHP
+  * @version 1.0beta
+  * @author Mike Stowe <me@mikestowe.com>
+  * @link https://github.com/mikestowe/php-raml2html
+  * @link http://www.mikestowe.com/2014/05/raml-2-html.php
+  * @license http://www.gnu.org/licenses/gpl-2.0.html GPL v2
+  */
+
+namespace RAML2HTML;  
+
+ /**
+  * RAML Class
+  * @package RAML2HTML
+  */
 class RAML extends RAMLDataObject
 {
 	
@@ -36,6 +51,8 @@ class RAML extends RAMLDataObject
 	 */
 	public function buildFromArray($array)
 	{
+		$array = $this->handleIncludes($array);
+		
 		$this->paths['/'] = new RAMLPathObject($this, '/');
 		
 		// Handle Base Data
@@ -61,11 +78,15 @@ class RAML extends RAMLDataObject
 			if (in_array($cleanKey, $this->verbs)) {
 				$cleanKey = strtoupper($cleanKey);
 				$cleanV = array();
-				foreach ($value['responses'] as $k => $v) {
-					$cleanV['c' . $k] = $v;
+				
+				if (isset($value['responses'])) {
+					foreach ($value['responses'] as $k => $v) {
+						$cleanV['c' . $k] = $v;
+					}
+					unset($value['responses']);
+					$value['responses'] = $cleanV;
 				}
-				unset($value['responses']);
-				$value['responses'] = $cleanV;
+				
 			}
 			unset($this->base[$key]);
 			$this->base[$cleanKey] = $value;
@@ -117,11 +138,15 @@ class RAML extends RAMLDataObject
 			} elseif (in_array($skey, $this->verbs)) {
 				$this->paths[$key]->addVerb($skey);
 				$cleanV = array();
-				foreach ($svalue['responses'] as $k => $v) {
-					$cleanV['c' . $k] = $v;
+				
+				if (isset($svalue['responses'])) {
+					foreach ($svalue['responses'] as $k => $v) {
+						$cleanV['c' . $k] = $v;
+					}
+					unset($svalue['responses']);
+					$svalue['responses'] = $cleanV;
 				}
-				unset($svalue['responses']);
-				$svalue['responses'] = $cleanV;
+				
 				unset($value[$skey]);
 				$value[strtoupper($skey)] = $svalue;
 			}
@@ -324,15 +349,98 @@ class RAML extends RAMLDataObject
 	public function handlePlaceHolders($string)
 	{
 		if (is_string($string) && preg_match('/.*({(.+)}).*/', $string, $matches)) {
-			if ($this->get($matches[2])) {
+			if ($this->get($matches[2], false)) {
 				$t = str_replace($matches[1], $this->get($matches[2]), $string);
 				return $t;
-			} elseif ($this->get('base') && $this->get('base')->get($matches[2])) {
+			} elseif ($this->get('base', false) && $this->get('base')->get($matches[2], false)) {
 				$t = str_replace($matches[1], $this->get('base')->get($matches[2]), $string);
 				return $t;
 			}
 		}
 		
 		return $string;
+	}
+	
+	
+	/**
+	 * Handle Includes
+	 * Handles the Includes within the Array
+	 * @param array $array
+	 * @return array
+	 */
+	public function handleIncludes($array)
+	{
+		foreach($array as $key => $value) {
+			if (is_array($value)) {
+				$array[$key] = $this->handleIncludes($value);
+			} elseif (is_string($value) && preg_match('/^\!include ([a-z0-9_\.\/]+)/i', $value, $matches)) {
+				unset($array[$key]);
+				
+				$ext_t = explode('.', $matches[1]);
+				$ext = strtolower(array_pop($ext_t));
+				
+				if (in_array($ext, array('yaml', 'raml'))) {
+					$t = spyc_load_file($matches[1]);
+				} else {
+					$t = file_get_contents($matches[1]);
+				}
+				
+				$array = array_merge($t, $array);
+			}
+		}
+
+		return $array;
+	}
+	
+	
+	/**
+	 * Ping Status
+	 * Ping the Server to find out if it's online or not
+	 * ##### SHOULD BE A GET REQUEST #####
+	 * @param string $url      defaults to baseUri
+	 * @Param array  $headers  defaults to empty array
+	 * @param int    $expire   defaults to 300 seconds or 5 minutes
+	 * @return string (online | offline)
+	 */
+	public function pingStatus($url = 'default', $headers = array(), $expire = 300, $notifyEmail = false)
+	{
+		global $cacheTimeLimit;
+		
+		if ($url == 'default') {
+			$url = $this->get('baseUri');
+		}
+		
+		$status = false;
+		if ($cacheTimeLimit && function_exists('apc_fetch')) {
+			$status = apc_fetch('RAMLStatus' . md5($url));
+		}
+		
+		if ($status) {
+			return $status;
+		}
+		
+		// Insert CURL with Optional Headers
+		$ch = curl_init($url);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_TIMEOUT, 3);
+		$output = curl_exec($ch);
+		$http_status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		curl_close($ch);
+		
+		$status = 'offline';
+		if (substr($http_status, 0, 1) == '2') {
+			$status = 'online';
+		}
+		
+		if ($notifyEmail && $status == 'offline') {
+			mail($notifyEmail, $this->title . ' API is Down!', 'The server at ' . $url . ' failed to be queried successfully.', 'FROM: ' . $notifyEmail);
+		}
+		
+		if ($cacheTimeLimit && function_exists('apc_store')) {
+			apc_store('RAMLStatus' . md5($url), $status, $cacheTimeLimit);
+		}
+		
+		return $status;
 	}
 }

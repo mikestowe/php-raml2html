@@ -1,4 +1,19 @@
 <?php
+/**
+  * RAML2HTML for PHP -- A Simple API Docs Script for RAML & PHP
+  * @version 1.0beta
+  * @author Mike Stowe <me@mikestowe.com>
+  * @link https://github.com/mikestowe/php-raml2html
+  * @link http://www.mikestowe.com/2014/05/raml-2-html.php
+  * @license http://www.gnu.org/licenses/gpl-2.0.html GPL v2
+  */
+
+namespace RAML2HTML;  
+
+ /**
+  * RAML Path Object Class
+  * @package RAML2HTML
+  */
 class RAMLPathObject extends RAMLDataObject
 {
 	
@@ -70,12 +85,12 @@ class RAMLPathObject extends RAMLDataObject
 			
 			if (isset($value['body']['application/json']) && is_string($value['body']['application/xml'])) {
 				$responses[$code][] = array('type' => 'application/xml', 'example' => $value['body']['application/xml']);
-			} else {
+			} elseif (isset($value['body'])) {
 				$t = 0;
 				foreach ($value['body'] as $rkey => $rvalue) {
 					$rexample = isset($rvalue['example']) ? $rvalue['example'] : null;
 					$rschema = isset($rvalue['schema']) ? $rvalue['schema'] : null;
-					$responses[$code][] = array('type' => $rkey, 'example' => $example, 'schema' => $rschema);
+					$responses[$code][] = array('type' => $rkey, 'example' => $rexample, 'schema' => $rschema);
 				}
 			}
 		}

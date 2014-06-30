@@ -2,15 +2,15 @@
 <ul class="resources">
 	<?php foreach ($RAML->path()->getChildren() as $abspath => $endpoint) { ?> 
 	<li>
-		<div style="float: left; width: 150px;">
+		<div style="display: inline-block; width: 150px;">
 			<a href="<?php echo $_SERVER['PHP_SELF']; ?>?path=<?php echo $abspath; ?>"><?php echo $endpoint; ?></a>
 		</div>
 		
-		<div style="float: left;">
+		<div style="display: inline-block;">
 			<?php echo $RAML->getPathObject($abspath)->get('description'); ?>
 		</div>
 		
-		<br style="clear: both;" />
+		<br />
 	</li>
 	<?php } ?>
 </ul>

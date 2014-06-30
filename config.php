@@ -1,7 +1,7 @@
 <?php
 
 // Source of Your RAML file (local or http)
-$RAMLsource = 'http://api-portal.anypoint.mulesoft.com/twitter/api/twitter-rest-api/twitter-rest-api.raml';
+$RAMLsource = 'raml/twitter.raml';
 
 // Types of Action Verbs Allowed
 $RAMLactionVerbs = array('get', 'post', 'put', 'patch', 'delete', 'connect', 'trace');

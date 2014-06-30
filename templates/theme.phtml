@@ -48,9 +48,17 @@
 			
 			footer {
 				clear: both;
-				padding: 80px 0 20px 0;
+				margin-top: 30px;
+				padding: 10px 20px;
 				text-align: center;
 				font-size: 10px;
+				background: #333;
+				color: #999;
+				border-top: 2px solid #999;
+			}
+			
+			footer a {
+				color: #ccc;
 			}
 			
 			table {
@@ -138,6 +146,14 @@
 		    	color: #98b805;
 		    }
 		    
+		    .online {
+		    	color: #090;
+		    }
+		    
+		    .offline {
+		    	color: #F00;
+		    }
+		    
 		    
 		    ul.verbs, ul.resources, nav ul {
 		    	margin: 0;
@@ -186,9 +202,10 @@
 		    }
 			
 			@media screen and (min-width: 60em ) {
+			  nav { float: right; top: 0; right: 0; width: 30em; }
 			  article { margin-right: 30.75em; }
 			
-				nav { position: absolute; top: 0; right: 0; width: 30em; }   
+				   
 			}
 		
 		</style>
@@ -203,6 +220,12 @@
 		
 		
 		<div id="container">
+			
+			<nav>
+				<?php 
+				include('_menu.phtml');
+				?>
+			</nav>
 		
 			<article>		
 				<?php if ($RAML->getCurrentPath() != '/'): ?>
@@ -250,18 +273,13 @@
 				
 			
 			</article>
-				
-				
-			<nav>
-				<?php 
-				include('_menu.phtml');
-				?>
-			</nav>
+
+			<div style="clear: both;"></div>
 
 		</div>
 
 		<footer>
-			
+			powered by <a href="http://www.raml.org">RAML</a> &nbsp; &nbsp; | &nbsp; &nbsp; script by <a href="http://www.mikestowe.com/2014/05/raml-2-html.php" target="_blank">MikeStowe.com</a>
 		</footer>
 	</body>
 </html>

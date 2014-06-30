@@ -25,11 +25,14 @@ function formatResponse($text) {
 $RAML = false;
 if ($cacheTimeLimit && function_exists('apc_fetch')) {
 	$RAML = apc_fetch('RAML' . md5($RAMLsource));
+} elseif (!$cacheTimeLimit && function_exists('apc_fetch')) {
+	// Remove existing cache files
+	apc_delete('RAML' . md5($RAMLsource));
 }
 
 if (!$RAML) {
 	$RAMLarray = spyc_load(file_get_contents($RAMLsource));
-	$RAML = new RAML($RAMLactionVerbs);
+	$RAML = new RAML2HTML\RAML($RAMLactionVerbs);
 	$RAML->buildFromArray($RAMLarray);
 	
 	if ($cacheTimeLimit && function_exists('apc_store')) {

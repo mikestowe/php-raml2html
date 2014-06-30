@@ -1,4 +1,19 @@
 <?php
+/**
+  * RAML2HTML for PHP -- A Simple API Docs Script for RAML & PHP
+  * @version 1.0beta
+  * @author Mike Stowe <me@mikestowe.com>
+  * @link https://github.com/mikestowe/php-raml2html
+  * @link http://www.mikestowe.com/2014/05/raml-2-html.php
+  * @license http://www.gnu.org/licenses/gpl-2.0.html GPL v2
+  */
+
+namespace RAML2HTML;  
+
+ /**
+  * RAML Data Object Class
+  * @package RAML2HTML
+  */
 class RAMLDataObject
 {
 	protected $master;
@@ -24,13 +39,22 @@ class RAMLDataObject
 		$this->data[$key] = $value;
 	}
 	
-	public function get($dataKey)
+	/**
+	 * Get
+	 * Get Value based on Key
+	 * @param string $dataKey
+	 * @return mixed
+	 */
+	public function get($dataKey, $default = '[RAMLDataObject]')
 	{
 		if (!isset($this->data[$dataKey])) {
 			$dataKey = strtoupper($dataKey);
 		}
 		
 		if (!isset($this->data[$dataKey])) {
+			if ($default != '[RAMLDataObject]') {
+				return $default;
+			}
 			return new RAMLDataObject();
 			// shoudl return false
 		} elseif (is_array($this->data[$dataKey])) {
@@ -40,7 +64,7 @@ class RAMLDataObject
 			// convert to preg_match_all
 		} elseif (is_string($this->data[$dataKey]) && preg_match('/^\!include ([a-z_\.\/]+)/i', $this->data[$dataKey], $matches)) {
 			$ext = array_pop(explode('.', $matches[1]));
-			if (in_array($ext, 'yaml', 'raml')) {
+			if (in_array($ext, array('yaml', 'raml'))) {
 				$t = new RAMLDataOject(spyc_load_file($matches[1]));
 				$t->setMaster($this);
 				return $t;

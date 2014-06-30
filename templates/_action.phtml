@@ -1,14 +1,9 @@
-<br style="clear: both;" />
+<br />
 
-<div style="float: left;">
-	<span class="badge badge_<?php echo $RAML->getCurrentAction(); ?>"><?php echo $RAML->getCurrentAction(); ?></span>
-</div>
+<span class="badge badge_<?php echo $RAML->getCurrentAction(); ?>"><?php echo $RAML->getCurrentAction(); ?></span>
+<strong style="display: inline-block; font-size: 14px; padding-top: 5px;" class="text_<?php echo $RAML->getCurrentAction(); ?>"><?php echo $RAML->baseUri . $RAML->getCurrentPath(); ?></strong>
 
-<div style="float: left;">
-	<strong style="display: inline-block; font-size: 14px; padding-top: 5px;" class="text_<?php echo $RAML->getCurrentAction(); ?>"><?php echo $RAML->baseUri . $RAML->getCurrentPath(); ?></strong>
-</div>
-
-<br style="clear: both;" />
+<br />
 
 <p style="margin-top: 30px;"><?php echo $RAML->action()->get('description'); ?></p>
 
