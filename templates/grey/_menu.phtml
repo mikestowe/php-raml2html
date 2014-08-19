@@ -14,7 +14,7 @@
 	Server Status: 
 	
 	<?php
-	$status = $RAML->pingStatus();
+	$status = $RAML->pingStatus('http://www.mikestowe.com');
 	if ($status == 'online'): ?>
 		<span class="online">Online</span>
 	<?php else: ?>

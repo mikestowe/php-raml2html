@@ -10,6 +10,6 @@ $RAMLactionVerbs = array('get', 'post', 'put', 'patch', 'delete', 'connect', 'tr
 $cacheTimeLimit = '36000';
 
 // Path to the theme file for the docs
-$docsTheme = 'templates/theme.phtml';
+$docsTheme = 'templates/grey/index.phtml';
 
 ?>
