@@ -25,8 +25,12 @@ class RAML extends RAMLDataObject
 	private $paths = array();
 	private $traits = array();
 	private $base = array();
+	private $resources = array();
+	private $schemas = array();
+	private $examples = array();
 	private $currentPath = '/';
 	private $currentVerb = null;
+	private $includePath = '../raml/';
 	
 	
 	/**
@@ -52,7 +56,6 @@ class RAML extends RAMLDataObject
 	public function buildFromArray($array)
 	{
 		$array = $this->handleIncludes($array);
-		
 		$this->paths['/'] = new RAMLPathObject($this, '/');
 		
 		// Handle Base Data
@@ -60,9 +63,17 @@ class RAML extends RAMLDataObject
 			if (is_array($value) && substr($key, 0, 1) == '/') {
 				continue;
 			} elseif ($key == 'resourceTypes') {
-				$this->base = $value[0]['base'];
+				$this->resources = $value;
 			} elseif ($key == 'traits') {
-				$this->traits[key($value)] = $value[(key($value))];
+				$this->traits = $value;
+			} elseif ($key == 'schemas') {
+				foreach ($value as $v) {
+					$this->schemas[key($v)] = $v[key($v)];
+				}
+			} elseif ($key == 'examples') {
+				foreach ($value as $v) {
+					$this->examples[$v[0]] = $v[1];
+				}
 			} elseif (in_array(strtoupper($key), $this->verbs)) {
 				$this->paths[$key]->addVerb($key);
 				$this->set(strtoupper($key), $value);
@@ -363,6 +374,22 @@ class RAML extends RAMLDataObject
 	
 	
 	/**
+	 * Handle Schemas
+	 * Replaces Schema references
+	 * @param string
+	 * @return string
+	 */
+	 public function handleSchemas($string)
+	 {
+	 	if (!isset($this->schemas[$string])) {
+	 		return $string;
+	 	}
+		
+		return $this->schemas[$string];
+	 }
+	
+	
+	/**
 	 * Handle Includes
 	 * Handles the Includes within the Array
 	 * @param array $array
@@ -373,19 +400,18 @@ class RAML extends RAMLDataObject
 		foreach($array as $key => $value) {
 			if (is_array($value)) {
 				$array[$key] = $this->handleIncludes($value);
-			} elseif (is_string($value) && preg_match('/^\!include ([a-z0-9_\.\/]+)/i', $value, $matches)) {
-				unset($array[$key]);
 				
+			} elseif (is_string($value) && preg_match('/^\!include ([a-z0-9_\.\/\-]+)/i', $value, $matches)) {
 				$ext_t = explode('.', $matches[1]);
 				$ext = strtolower(array_pop($ext_t));
 				
 				if (in_array($ext, array('yaml', 'raml'))) {
-					$t = spyc_load_file($matches[1]);
+					$t = spyc_load_file($this->includePath . $matches[1]);
+					$array = array_merge($t, $array);
+					unset($array[$key]);
 				} else {
-					$t = file_get_contents($matches[1]);
+					$array[$key] = file_get_contents($this->includePath . $matches[1]);
 				}
-				
-				$array = array_merge($t, $array);
 			}
 		}
 
@@ -442,5 +468,18 @@ class RAML extends RAMLDataObject
 		}
 		
 		return $status;
+	}
+
+
+	/**
+	 * Set Include Path
+	 * Required for multi-directory RAML files
+	 * @param string $path     path of the RAML files
+	 * @return RAML
+	 */
+	public function setIncludePath($path)
+	{
+		$this->includePath = realpath($path) . '/';
+		return $this;
 	}
 }

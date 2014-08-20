@@ -29,7 +29,7 @@ class RAMLDataObject
 		$this->master = $master;
 	}
 	
-	public function setData(array $data = array())
+	public function setData($data = array())
 	{
 		$this->data = $data;
 	}
@@ -51,7 +51,7 @@ class RAMLDataObject
 			$dataKey = strtoupper($dataKey);
 		}
 		
-		if (!isset($this->data[$dataKey])) {
+		if (!isset($this->data[$dataKey])) {			
 			if ($default != '[RAMLDataObject]') {
 				return $default;
 			}
@@ -71,6 +71,8 @@ class RAMLDataObject
 			}
 			
 			return file_get_contents($matches[1]);
+		} elseif ($datakey == 'schema') {
+			$this->data[$dataKey] = $this->master->handleSchema($this->data[$dataKey]);
 		}
 		
 		return $this->master->handlePlaceHolders($this->data[$dataKey]);

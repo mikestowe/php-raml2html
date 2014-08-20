@@ -33,6 +33,8 @@ if ($cacheTimeLimit && function_exists('apc_fetch')) {
 if (!$RAML) {
 	$RAMLarray = spyc_load(file_get_contents($RAMLsource));
 	$RAML = new RAML2HTML\RAML($RAMLactionVerbs);
+
+	$RAML->setIncludePath(dirname($RAMLsource) . '/');
 	$RAML->buildFromArray($RAMLarray);
 	
 	if ($cacheTimeLimit && function_exists('apc_store')) {
@@ -53,7 +55,6 @@ if (isset($_GET['action']) && $RAML->isActionValid($_GET['action'])) {
 	$RAML->setCurrentAction($_GET['action']);
 	unset($_GET['action']);
 }
-
 
 // Render Template
 require_once($docsTheme);
