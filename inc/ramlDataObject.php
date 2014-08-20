@@ -71,7 +71,7 @@ class RAMLDataObject
 			}
 			
 			return file_get_contents($matches[1]);
-		} elseif ($datakey == 'schema') {
+		} elseif ($dataKey == 'schema') {
 			$this->data[$dataKey] = $this->master->handleSchema($this->data[$dataKey]);
 		}
 		
