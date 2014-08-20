@@ -63,16 +63,16 @@ class RAML extends RAMLDataObject
 			if (is_array($value) && substr($key, 0, 1) == '/') {
 				continue;
 			} elseif ($key == 'resourceTypes') {
-				$this->resources = $value;
+				foreach ($value as $v) {
+					$this->resources[key($v)] = $v[key($v)];
+				}
 			} elseif ($key == 'traits') {
-				$this->traits = $value;
+				foreach ($value as $v) {
+					$this->traits[key($v)] = $v[key($v)];
+				}
 			} elseif ($key == 'schemas') {
 				foreach ($value as $v) {
 					$this->schemas[key($v)] = $v[key($v)];
-				}
-			} elseif ($key == 'examples') {
-				foreach ($value as $v) {
-					$this->examples[$v[0]] = $v[1];
 				}
 			} elseif (in_array(strtoupper($key), $this->verbs)) {
 				$this->paths[$key]->addVerb($key);
@@ -386,6 +386,30 @@ class RAML extends RAMLDataObject
 	 	}
 		
 		return $this->schemas[$string];
+	 }
+	 
+	 
+	 /**
+	 * Handle Traits
+	 * Replaces Traits references
+	 * @param string
+	 * @return string
+	 */
+	 public function handleTraits($string)
+	 {
+	 	// Placeholder
+	 }
+	 
+	 
+	 /**
+	 * Handle Resources
+	 * Replaces ResouceType references
+	 * @param string
+	 * @return string
+	 */
+	 public function handleResourceTypes($string)
+	 {
+	 	// Placeholder
 	 }
 	
 	
