@@ -16,10 +16,9 @@ require_once('config.php');
 
 
 // Dangling Function
-function formatResponse($text) {	
-	return str_replace(array(" ", "\n"), array("&nbsp;", "<br />"), htmlentities($text));
+function formatResponse($text) {
+        return str_replace(array(" ", "\n"), array("&nbsp;", "<br />"), htmlspecialchars($text, ENT_QUOTES));
 }
-
 
 // Handle Caching and Build
 $RAML = false;
