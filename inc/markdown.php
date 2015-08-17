@@ -41,7 +41,7 @@ class markdown
 		
 		// Handle Code
 		$input = preg_replace_callback('/`([^`]+)`/i', function($matches) {
-			return '<code>'.htmlentities($matches[1]).'</code>';
+			return '<code><pre>'.htmlentities($matches[1]).'</pre></code>';
 		}, $input);
 		
 		// Handle line breaks
