@@ -46,5 +46,22 @@ class markdown
 		
 		// Handle line breaks
 		return str_replace("\n", "<br />", $input);
-	}	
+	}
+	
+	
+	static function clean($input) {
+		foreach (self::$patterns as $search => $replace) {
+			if (strpos($replace, '$2')) {
+				$replace = '$2';
+			} elseif (strpos($replace, '$1')) {
+				$replace = '$1';
+			} else {
+				$replace = '';
+			}
+			
+			$input = preg_replace('/'.$search.'/i', $replace, $input);
+		}
+		
+		return str_replace("\n", "  ", $input);
+	}
 }
