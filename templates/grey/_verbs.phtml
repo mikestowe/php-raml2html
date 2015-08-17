@@ -8,7 +8,7 @@
 		</div>
 		
 		<div style="float: display: inline-block; margin: -26px 0 0 90px;">
-			<?php echo $RAML->path()->get($verb)->get('description'); ?>
+			<?php echo RAML2HTML\markdown::clean($RAML->path()->get($verb)->get('description')); ?>
 		</div>
 		<br />
 	</li>
