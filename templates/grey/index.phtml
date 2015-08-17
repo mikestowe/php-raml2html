@@ -63,10 +63,9 @@
 			}
 			
 			.alert, .info, .warning {
-				width: 98%; 
-				margin: 10px auto 0 auto;
+				width: 96%; 
+				margin: 0;
 				padding: 8px 15px;
-				border-radius: 5px;
 				border: 2px solid #075698;
 				background: #AEEAFF;
 				color: #333;
@@ -262,7 +261,7 @@
 				
 				
 				<?php if($validPath && !$RAML->getCurrentAction() && $RAML->path()->description):
-					echo RAML2HTML\markdown::parse($RAML->path()->description);
+					echo RAML2HTML\markdown::parse($RAML->path()->description); 
 				endif; ?>
 				
 				
