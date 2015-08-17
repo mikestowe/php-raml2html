@@ -13,7 +13,7 @@
 	<table>
 		<thead>
 			<tr>
-				<td>Parameter</td><td>Type</td><td>Description</td>
+				<td>Parameter</td><td>Type</td><td>Required</td><td>Description</td>
 			</tr>
 		</thead>
 		
@@ -22,7 +22,7 @@
 		?>
 		
 			<tr>
-				<td><?php echo $param; ?></td><td><?php echo $details['type']; ?></td><td><?php echo $details['description']; ?></td>
+				<td><?php echo $param; ?></td><td><?php echo $details['type']; ?></td><td><?php echo ($details['required'] == 1 ? 'Yes' : ''); ?></td><td><?php echo $details['description']; ?><?php echo (isset($details['example']) ? '<span style="display: block; margin: 6px 0 8px 0; border-top: 1px solid #aaa; color: #666; padding: 4px; font-size: 10px;"><b>Example:</b> ' . $details['example'] . '</span>' : ''); ?></td>
 			</tr>
 			
 		<?php } ?>
@@ -36,7 +36,7 @@
 <table>
 	<thead>
 		<tr>
-			<td>Parameter</td><td>Type</td><td>Description</td>
+			<td>Parameter</td><td>Type</td><td>Required</td><td>Description</td>
 		</tr>
 	</thead>
 	
@@ -45,7 +45,7 @@
 	?>
 	
 		<tr>
-			<td><?php echo $param; ?></td><td><?php echo $details['type']; ?></td><td><?php echo $details['description']; ?></td>
+			<td><?php echo $param; ?></td><td><?php echo $details['type']; ?></td><td><?php echo ($details['required'] == 1 ? 'Yes' : ''); ?></td><td><?php echo $details['description']; ?><?php echo (isset($details['example']) ? '<span style="display: block; margin: 6px 0 8px 0; border-top: 1px solid #aaa; color: #666; padding: 4px; font-size: 10px;"><b>Example:</b> ' . $details['example'] . '</span>' : ''); ?></td>
 		</tr>
 		
 	<?php } ?>
@@ -59,7 +59,7 @@
 <table>
 	<thead>
 		<tr>
-			<td>Parameter</td><td>Type</td><td>Description</td>
+			<td>Parameter</td><td>Type</td><td>Required</td><td>Description</td>
 		</tr>
 	</thead>
 	
@@ -73,7 +73,7 @@
 	?>
 	
 		<tr>
-			<td><?php echo $param; ?></td><td><?php echo $details['type']; ?></td><td><?php echo $details['description']; ?></td>
+			<td><?php echo $param; ?></td><td><?php echo $details['type']; ?></td><td><?php echo ($details['required'] == 1 ? 'Yes' : ''); ?></td><td><?php echo $details['description']; ?><?php echo (isset($details['example']) ? '<span style="display: block; margin: 6px 0 8px 0; border-top: 1px solid #aaa; color: #666; padding: 4px; font-size: 10px;"><b>Example:</b> ' . $details['example'] . '</span>' : ''); ?></td>
 		</tr>
 		
 	<?php } ?>
