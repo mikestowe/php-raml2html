@@ -2,6 +2,19 @@
 	<head>
 		<title><?php echo $RAML->title; ?>: <?php echo $RAML->getCurrentPath(); ?></title>
 		<meta charset="utf-8">
+		
+		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/styles/default.min.css">
+		<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/highlight.min.js"></script>
+		<script>
+			$(document).ready(function(){
+				hljs.configure({useBR: true});
+
+				$('code, div.apiresponse').each(function(i, block) {
+				  hljs.highlightBlock(block);
+				});
+			});
+		</script>
 
 		<style type="text/css">
 		
@@ -212,7 +225,7 @@
 		    	font-weight: bold;
 		    }
 		    
-		    div.apiresponse {
+		    div.apiresponse, code {
 		    	width: 96%;
 		    	max-height: 300px;
 		    	background: #f3f3f3;
@@ -220,7 +233,7 @@
 		    	padding: 10px;
 		    	overflow: scroll;
 		    	font-family: monospace;
-		    	font-size: 10px;
+		    	font-size: 11px;
 		    }
 			
 			@media screen and (min-width: 60em ) {
