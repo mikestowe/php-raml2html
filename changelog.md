@@ -12,6 +12,9 @@
   - info
   - warning
   - alert
+- Added in Auto-generated Code Samples
+  - PHP via Curl
+  - Ruby on Rails
 - Added in comments via Disqus (optional)
 - Added in code and response formatting
 - Added "required" and "example" fields to Parameter boxes
