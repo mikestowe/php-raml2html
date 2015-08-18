@@ -5,6 +5,7 @@
 - Added in support for basic markdown
   - headers
   - bold and italic text
+  - lists (ordered/unordered)
   - links and images
   - code blocks
 - Added in support for alerts
