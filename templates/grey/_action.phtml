@@ -1,3 +1,4 @@
+<?php $codeSamples = new RAML2HTML\codeSamples($RAML); ?>
 <br />
 
 <span class="badge badge_<?php echo $RAML->getCurrentAction(); ?>"><?php echo $RAML->getCurrentAction(); ?></span>
@@ -82,6 +83,24 @@
 <?php endif; ?>
 
 
+<h3>Code Samples</h3>
+<a href="javascript:void(0);" onclick="switchCodeSample('codeSamplesPHP','codeSampleLinkPHP');" id="codeSampleLinkPHP" class="codeSampleLink">PHP</a>
+<a href="javascript:void(0);" onclick="switchCodeSample('codeSamplesRails','codeSampleLinkRails');" id="codeSampleLinkRails" class="codeSampleLink">Rails</a>
+<pre class="codeSample" id="codeSamplesPHP"><code><?php echo str_replace("\n", "<br />", $codeSamples->php()); ?></code></pre>
+<pre class="codeSample" id="codeSamplesRails"><code><?php echo str_replace("\n", "<br />", $codeSamples->rails()); ?></code></pre>
+
+<script language="javascript">
+	$('#codeSampleLinkPHP').addClass('activeCodeSample');
+	$('.codeSample').hide();
+	$('#codeSamplesPHP').show();
+	
+	function switchCodeSample(view, source) {
+		$('.codeSampleLink').removeClass('activeCodeSample');
+		$('#' + source).addClass('activeCodeSample');
+		$('.codeSample').hide();
+		$('#' + view).show();
+	}
+</script>
 
 <h3>Response</h3>
 
