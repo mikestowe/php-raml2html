@@ -290,6 +290,9 @@
 				<?php
 				if ($RAML->getCurrentAction()):
 					include('_action.phtml');
+					if ($disqus && $disqus_shortname):
+ 						include('_comments.phtml');
+					endif;
 				endif;
 				?>
 				
