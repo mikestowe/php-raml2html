@@ -13,6 +13,7 @@ require_once('inc/ramlDataObject.php');
 require_once('inc/raml.php');
 require_once('inc/ramlPathObject.php');
 require_once('inc/markdown.php');
+require_once('inc/codeSamples.php');
 require_once('config.php');
 
 
