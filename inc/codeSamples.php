@@ -79,7 +79,7 @@ class codeSamples
 		
 		if (in_array($this->RAML->getCurrentAction(), array('POST', 'PUT', 'PATCH'))) {
 			if($this->RAML->get('body')->get('application/json')->get('example')) {
-				$template .= '$body = \'' . str_replace("'", "\\'", $this->RAML->get('body')->get('application/json')->get('example')) . '\'' . "\n";
+				$template .= '$body = \'' . str_replace("'", "\\'", $this->RAML->get('body')->get('application/json')->get('example')) . '\';' . "\n";
 			} else {
 				$template .= '// $body is your JSON/ XML/ Text/ Form Query/ etc' . "\n";
 			}
