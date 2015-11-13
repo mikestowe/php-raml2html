@@ -1,7 +1,7 @@
 <?php
 /**
   * RAML2HTML for PHP -- A Simple API Docs Script for RAML & PHP
-  * @version 1.1beta
+  * @version 1.2beta
   * @author Mike Stowe <me@mikestowe.com>
   * @link https://github.com/mikestowe/php-raml2html
   * @link http://www.mikestowe.com/2014/05/raml-2-html.php
