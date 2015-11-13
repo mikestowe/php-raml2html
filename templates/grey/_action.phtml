@@ -84,15 +84,17 @@
 
 
 <h3>Code Samples</h3>
+<a href="javascript:void(0);" onclick="switchCodeSample('codeSamplesJS','codeSampleLinkJS');" id="codeSampleLinkJS" class="codeSampleLink">JavaScript</a>
 <a href="javascript:void(0);" onclick="switchCodeSample('codeSamplesPHP','codeSampleLinkPHP');" id="codeSampleLinkPHP" class="codeSampleLink">PHP</a>
 <a href="javascript:void(0);" onclick="switchCodeSample('codeSamplesRails','codeSampleLinkRails');" id="codeSampleLinkRails" class="codeSampleLink">Rails</a>
+<pre class="codeSample" id="codeSamplesJS"><code><?php echo str_replace("\n", "<br />", $codeSamples->javascript()); ?></code></pre>
 <pre class="codeSample" id="codeSamplesPHP"><code><?php echo str_replace("\n", "<br />", $codeSamples->php()); ?></code></pre>
 <pre class="codeSample" id="codeSamplesRails"><code><?php echo str_replace("\n", "<br />", $codeSamples->rails()); ?></code></pre>
 
 <script language="javascript">
-	$('#codeSampleLinkPHP').addClass('activeCodeSample');
+	$('#codeSampleLinkJS').addClass('activeCodeSample');
 	$('.codeSample').hide();
-	$('#codeSamplesPHP').show();
+	$('#codeSamplesJS').show();
 	
 	function switchCodeSample(view, source) {
 		$('.codeSampleLink').removeClass('activeCodeSample');

@@ -104,17 +104,41 @@ class codeSamples
 	public function rails() {
 		$template = 'uri = URI.parse("'.$this->path().'")' . "\n";
 		$template .= 'http = Net::HTTP.new(uri.host, uri.port)' . "\n";
-		$template .= 'request = Net::HTTP::'.ucfirst(strtolower($this->RAML->getCurrentAction())).'.new(uri.request_uri)' . "\n";
-		$template .= "\n";
+		$template .= 'request = Net::HTTP::'.ucfirst(strtolower($this->RAML->getCurrentAction())).'.new(uri.request_uri)' . "\n\n";
+		$template .= '# Make sure you set the appropriate headers' . "\n";
+		$template .= 'request["header"] = "header value"' . "\n\n";
 		
 		if ($this->RAML->getCurrentAction() != 'GET') {
 			$template .= '# body is your JSON/ XML/ Text/ Form Query/ etc' . "\n";
-			$template .= 'request.set_form_data(body)' . "\n";
+			$template .= 'request.set_form_data(body)' . "\n\n";
 		}
 		
-		$template .= "\n";
 		$template .= 'response = http.request(request)' . "\n";
-		$template .= 'render :json => response.body' . "\n";
+		
+		return $template;
+	}
+	
+	
+	
+	/**
+	 * Produce Code Sample for JavaScript
+	 * @return string
+	 */
+	public function javascript() {		
+		$template = 'var xmlHttp = new XMLHttpRequest();' . "\n";
+		$template .= 'xmlHttp.open("'.strtoupper($this->RAML->getCurrentAction()).'", "'.$this->path().'", false);' . "\n";
+		$template .= "\n";
+		$template .= "// Make sure you set the appropriate headers\n";
+		$template .= 'xmlHttp.setRequestHeader("Header Goes Here");' . "\n\n";
+		$send = 'null';
+		
+		if ($this->RAML->getCurrentAction() != 'GET') {
+			$template .= 'var data = "# body is your JSON/ XML/ Text/ Form Query/ etc"' . "\n";
+			$send = 'data';
+		}
+		
+		$template .= 'xmlHttp.send('.$send.');' . "\n\n";
+		$template .= 'var response = xmlHttp.responseText;' . "\n";
 		
 		return $template;
 	}
