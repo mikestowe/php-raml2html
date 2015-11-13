@@ -13,6 +13,7 @@
   - warning
   - alert
 - Added in Auto-generated Code Samples
+  - JavaScript
   - PHP via Curl
   - Ruby on Rails
 - Added in comments via Disqus (optional)
