@@ -90,7 +90,7 @@ class RAMLDataObject
 	
 	public function isArray()
 	{
-		if (count($this->data) > 1) {
+		if ((is_array($this->data) || is_object($this->data)) && count($this->data) > 0)) {
 			return true;
 		}
 		return false;
