@@ -23,7 +23,7 @@ Important setup information is stored in config.php.  You can read setup instruc
 Yes!  You can find the latest stable demo and the latest development version demos [here](http://www.mikestowe.com/2014/05/raml-2-html.php).
 
 #### Does it support all RAML features?
-Not yet, although version 1.0 was a complete rewrite supports base, path variables, multi-level includes, traits, and more.  Other features will be added down the road!
+Not yet, although version 1.0 was a complete rewrite supports base, path variables, multi-level includes, resourceTypes, traits, and more.  Other features will be added down the road!
 
 #### How Can I Help?
 Easy!  Download and use RAML 2 HTML for PHP, tell your friends, if you find issues report them, or even better - feel free to contribute by forking and making pull requests!
