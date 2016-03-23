@@ -1,7 +1,7 @@
 <?php
 /**
   * RAML2HTML for PHP -- A Simple API Docs Script for RAML & PHP
-  * @version 1.2beta
+  * @version 1.3beta
   * @author Mike Stowe <me@mikestowe.com>
   * @link https://github.com/mikestowe/php-raml2html
   * @link http://www.mikestowe.com/2014/05/raml-2-html.php
@@ -84,6 +84,8 @@ class RAML extends RAMLDataObject
 			unset($array[$key]);
 		}
 		
+		$this->formatResourceTypes();
+		
 		foreach ($this->base as $key => $value) {
 			$cleanKey = str_replace('?', '', $key);
 			if (in_array($cleanKey, $this->verbs)) {
@@ -109,7 +111,32 @@ class RAML extends RAMLDataObject
 			$this->generatePathData($key, $value);
 		}
 	}
-	
+
+
+	/**
+	 * Format ResourceTypes
+	 * Prevent Collisions
+	 * @return void
+	 */
+	 
+	 private function formatResourceTypes() {
+ 		foreach ($this->resources as $rtk => $rtv) {
+			foreach ($rtv as $rtmtk => $rtmtv) {
+				if (in_array($rtmtk, $this->verbs)) {
+					// Fix responses first
+					if (isset($rtmtv['responses'])) {
+						foreach ($rtmtv['responses'] as $k => $v) {
+							unset($rtmtv['responses'][$k]);
+							$rtmtv['responses']['c'.$k] = $v;
+						}
+					}
+					unset($this->resources[$rtk][$rtmtk]);
+					$this->resources[$rtk][strtoupper($rtmtk)] = $rtmtv;
+				}
+			}
+		}
+	 }
+	 
 	
 	/**
 	 * Generata Path Data
@@ -162,8 +189,21 @@ class RAML extends RAMLDataObject
 				$value[strtoupper($skey)] = $svalue;
 			}
 		}
-		
+
+		// Add in base first
 		$value = array_merge_recursive($value, $this->base);
+
+		// Handle resourceTypes
+		if(isset($value['type'])) {
+			foreach($this->verbs as $verb) {
+				$verb = strtoupper($verb);
+				if (isset($this->resources[$value['type']][$verb]) && !isset($value[$verb])) {
+					$this->paths[$key]->addVerb($verb);
+				}
+			}
+			
+			$value = array_merge_recursive($value, $this->resources[$value['type']]);
+		}
 		
 		$this->paths[$key]->setData($value);
 	}
