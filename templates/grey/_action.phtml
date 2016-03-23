@@ -115,7 +115,7 @@
 				continue;
 			}
 			 
-			echo '<tt>' . $response['type'] . '</tt>';
+			echo '<tt>' . (is_array($response['type']) ? array_shift($response['type']) : $response['type']) . '</tt>';
 			
 			if (isset($response['example'])):
 	?>
