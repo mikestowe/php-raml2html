@@ -1,4 +1,9 @@
 #RAML2HTML for PHP
+###version 1.3 changelog
+- Added in support for resourceTypes
+- Fixed isArray() bug
+
+
 ###version 1.2 changelog
 
 - Upgraded Spyc to fix spacing issues
@@ -19,4 +24,3 @@
 - Added in comments via Disqus (optional)
 - Added in code and response formatting
 - Added "required" and "example" fields to Parameter boxes
-
