@@ -1,0 +1,16 @@
+<h3>Available Actions</h3>
+
+<ul class="verbs">
+	<?php foreach ($RAML->path()->getVerbs() as $verb) { ?>
+	<li>
+		<div style="display: inline-block;">
+			<a href="<?php echo $_SERVER['PHP_SELF']; ?>?path=<?php echo $RAML->getCurrentPath(); ?>&action=<?php echo $verb; ?>" class="badge badge_<?php echo $verb; ?>"><?php echo $verb; ?></a>
+		</div>
+		
+		<div style="float: display: inline-block; margin: -26px 0 0 90px;">
+			<?php echo RAML2HTML\markdown::clean($RAML->path()->get($verb)->get('description')); ?>
+		</div>
+		<br />
+	</li>
+	<?php } ?>
+</ul>

@@ -1,0 +1,147 @@
+<?php $codeSamples = new RAML2HTML\codeSamples($RAML); ?>
+<br />
+
+<span class="badge badge_<?php echo $RAML->getCurrentAction(); ?>"><?php echo $RAML->getCurrentAction(); ?></span>
+<strong style="display: inline-block; font-size: 14px; padding-top: 5px;" class="text_<?php echo $RAML->getCurrentAction(); ?>"><?php echo $RAML->baseUri . $RAML->getCurrentPath(); ?></strong>
+
+<br />
+
+<p style="margin-top: 30px;"><?php echo RAML2HTML\markdown::parse($RAML->action()->get('description')); ?></p>
+
+
+<?php if ($RAML->action()->get('queryParameters')->isArray()): ?>
+	<h3>Query Parameters</h3>
+	<table>
+		<thead>
+			<tr>
+				<td>Parameter</td><td>Type</td><td>Required</td><td>Description</td>
+			</tr>
+		</thead>
+		
+		<?php
+		foreach ($RAML->action()->get('queryParameters')->toArray() as $param => $details) {
+		?>
+		
+			<tr>
+				<td><?php echo $param; ?></td><td><?php echo $details['type']; ?></td><td><?php echo (isset($details['required']) && $details['required'] == 1 ? 'Yes' : ''); ?></td><td><?php echo $details['description']; ?><?php echo (isset($details['example']) ? '<span style="display: block; margin: 6px 0 8px 0; border-top: 1px solid #aaa; color: #666; padding: 4px; font-size: 10px;"><b>Example:</b> ' . $details['example'] . '</span>' : ''); ?></td>
+			</tr>
+			
+		<?php } ?>
+		
+	</table>
+<?php endif; ?>
+
+
+<?php if ($RAML->action()->get('body')->get('application/x-www-form-urlencoded')->get('formParameters')->isArray()): ?>
+<h3>Form Parameters</h3>
+<table>
+	<thead>
+		<tr>
+			<td>Parameter</td><td>Type</td><td>Required</td><td>Description</td>
+		</tr>
+	</thead>
+	
+	<?php
+	foreach ($RAML->action()->get('body')->get('application/x-www-form-urlencoded')->get('formParameters')->toArray() as $param => $details) {
+	?>
+	
+		<tr>
+			<td><?php echo $param; ?></td><td><?php echo $details['type']; ?></td><td><?php echo (isset($details['required']) && $details['required'] == 1 ? 'Yes' : ''); ?></td><td><?php echo $details['description']; ?><?php echo (isset($details['example']) ? '<span style="display: block; margin: 6px 0 8px 0; border-top: 1px solid #aaa; color: #666; padding: 4px; font-size: 10px;"><b>Example:</b> ' . $details['example'] . '</span>' : ''); ?></td>
+		</tr>
+		
+	<?php } ?>
+	
+</table>
+<?php endif; ?>
+
+
+<?php if ($RAML->action()->get('body')->get('application/json')->get('schema')->get('properties')->isArray()): ?>
+<h3>JSON Parameters</h3>
+<table>
+	<thead>
+		<tr>
+			<td>Parameter</td><td>Type</td><td>Required</td><td>Description</td>
+		</tr>
+	</thead>
+	
+	<?php
+	$tmp = $RAML->action()->get('body')->get('application/json')->get('schema')->toArray();
+	if ($RAML->action()->get('body')->get('application/json')->get('schema')->isString()) {
+		$tmp = json_decode($RAML->action()->get('body')->get('application/json')->get('schema')->toString(), true);
+	}
+	
+	foreach ($tmp['properties'] as $param => $details) {
+	?>
+	
+		<tr>
+			<td><?php echo $param; ?></td><td><?php echo $details['type']; ?></td><td><?php echo (isset($details['required']) && $details['required'] == 1 ? 'Yes' : ''); ?></td><td><?php echo $details['description']; ?><?php echo (isset($details['example']) ? '<span style="display: block; margin: 6px 0 8px 0; border-top: 1px solid #aaa; color: #666; padding: 4px; font-size: 10px;"><b>Example:</b> ' . $details['example'] . '</span>' : ''); ?></td>
+		</tr>
+		
+	<?php } ?>
+	
+</table>
+<?php endif; ?>
+
+
+<h3>Code Samples</h3>
+<br />
+<a href="javascript:void(0);" onclick="switchCodeSample('codeSamplesJS','codeSampleLinkJS');" id="codeSampleLinkJS" class="codeSampleLink">JavaScript</a>
+<a href="javascript:void(0);" onclick="switchCodeSample('codeSamplesPHP','codeSampleLinkPHP');" id="codeSampleLinkPHP" class="codeSampleLink">PHP</a>
+<a href="javascript:void(0);" onclick="switchCodeSample('codeSamplesRails','codeSampleLinkRails');" id="codeSampleLinkRails" class="codeSampleLink">Rails</a>
+<pre class="codeSample" id="codeSamplesJS"><code><?php echo str_replace("\n", "<br />", $codeSamples->javascript()); ?></code></pre>
+<pre class="codeSample" id="codeSamplesPHP"><code><?php echo str_replace("\n", "<br />", $codeSamples->php()); ?></code></pre>
+<pre class="codeSample" id="codeSamplesRails"><code><?php echo str_replace("\n", "<br />", $codeSamples->rails()); ?></code></pre>
+
+<script language="javascript">
+	$('#codeSampleLinkJS').addClass('activeCodeSample');
+	$('.codeSample').hide();
+	$('#codeSamplesJS').show();
+	
+	function switchCodeSample(view, source) {
+		$('.codeSampleLink').removeClass('activeCodeSample');
+		$('#' + source).addClass('activeCodeSample');
+		$('.codeSample').hide();
+		$('#' + view).show();
+	}
+</script>
+
+<h3>Response</h3>
+
+<?php foreach ($RAML->path()->getResponses() as $code => $responses) { ?>
+	<h6><?php echo $code; ?>:</h6>
+	
+	<?php 
+		foreach ($responses as $response) {
+			if (in_array($response['type'], array('example', 'schema'))) {
+				continue;
+			}
+			 
+			echo '<span class="responseText">' . (is_array($response['type']) ? array_shift($response['type']) : $response['type']) . '</span>';
+			
+			if (isset($response['example'])):
+	?>
+	<br /><br />
+	<div class="apiresponse">
+			<?php echo formatResponse($response['example']); ?>
+	</div>
+	<?php endif; ?>
+	<p>&nbsp;</p>
+	<?php
+		}
+	} ?>
+
+
+
+<?php if (count($RAML->path()->getVerbs()) > 1): ?>
+	<h3>Other Endpoint Actions</h3>
+	<?php
+	foreach ($RAML->path()->getVerbs() as $verb) {
+		if ($verb == $RAML->getCurrentAction()) {
+			continue;
+		}
+	?>
+	<div style="float: left;">
+		<a href="<?php echo $_SERVER['PHP_SELF']; ?>?path=<?php echo $RAML->getCurrentPath(); ?>&action=<?php echo $verb; ?>" class="badge badge_<?php echo $verb; ?>"><?php echo $verb; ?></a>
+	</div>
+	<?php } ?>
+<?php endif; ?>
