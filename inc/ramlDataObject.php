@@ -1,7 +1,7 @@
 <?php
 /**
   * RAML2HTML for PHP -- A Simple API Docs Script for RAML & PHP
-  * @version 1.2beta
+  * @version 1.3beta
   * @author Mike Stowe <me@mikestowe.com>
   * @link https://github.com/mikestowe/php-raml2html
   * @link http://www.mikestowe.com/2014/05/raml-2-html.php
@@ -90,7 +90,7 @@ class RAMLDataObject
 	
 	public function isArray()
 	{
-		if ((is_array($this->data) || is_object($this->data)) && count($this->data) > 0)) {
+		if ((is_array($this->data) || is_object($this->data)) && count($this->data) > 0) {
 			return true;
 		}
 		return false;
