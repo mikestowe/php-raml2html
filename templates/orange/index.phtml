@@ -1,0 +1,305 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title><?php echo $RAML->title; ?> | <?php echo $RAML->getCurrentPath(); ?></title>
+
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/styles/androidstudio.min.css">	
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/highlight.min.js"></script>
+<script>
+	$(document).ready(function(){
+		hljs.configure({useBR: true});
+
+		$('code, div.apiresponse').each(function(i, block) {
+		  hljs.highlightBlock(block);
+		});
+	});
+</script>
+<style type="text/css">
+@import url(https://fonts.googleapis.com/css?family=Roboto);
+
+body {
+	background: #333;
+	color: #fff;
+	font-family: 'Roboto', sans-serif;
+}
+
+.container {
+	width: 80%;
+	margin: 10px auto;
+}
+
+footer, header {
+	background: #FF6347;
+	margin-bottom: 10px;
+	padding: 10px;
+	font-size: 12px;
+}
+
+footer {
+	margin: 10px 0 0 0;
+	color: #333;
+}
+
+article {
+	width: 70%;
+	float: left;
+	background: #fff;
+	color: #333;
+	padding: 10px;
+}
+
+nav {
+	width: 24%;
+	float: right;
+	padding: 10px;
+}
+
+nav ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+
+nav ul li {
+	padding: 0;
+	margin: 0;
+}
+
+nav ul li a {
+	margin-bottom: 5px;
+	display: block;
+	background: #444;
+	border: 1px solid #999;
+	padding: 5px;
+	font-size: 13px;
+	color: #fff;
+	text-decoration: none;
+}
+
+nav ul li a.index {
+	background: #333;
+}
+
+nav ul li a:hover {
+	background: #ccc;
+	color: #333;
+	border-right: 10px solid #FF6347;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-size: 30px;
+	font-weight: bold;
+	margin: 0 0 10px 0;
+}
+
+header h1 a {
+	text-decoration: none;
+	color: #fff;
+}
+
+footer a {
+	color: #fff;
+}
+
+h2 {
+	display: none;
+	color: #FF6347;
+	font-size: 20px;
+	margin: 0;
+}
+
+h3 {
+	color: #FF6347;
+	font-size: 18px;
+	margin: 30px 0 6px 0;
+}
+
+h6 {
+	display: inline;
+	font-size: 15px;
+}
+
+.badge {
+	display: inline-block;
+	padding: 4px;
+	background: #FF6347;
+	color: #fff;
+	border: 1px solid #333;
+	font-size: 14px;
+	margin-right: 8px;
+	width: 50px;
+	text-align: center;
+	text-decoration: none;
+}
+
+p, table {
+	font-size: 13px;
+	color: #666;
+}
+
+table {
+	width: 100%;
+}
+
+thead {
+	font-weight: bold;
+}
+
+
+table tr td {
+	margin: 0;
+	padding: 6px;
+}
+
+table thead tr:nth-child(odd) {
+	background: none;
+}
+
+table tr:nth-child(odd) {
+	background: #f3f3f3;
+}
+
+div.apiresponse, code {
+	width: 96%;
+	max-height: 300px;
+	background: #333;
+	padding: 10px;
+	overflow: scroll;
+	font-family: monospace;
+	font-size: 11px;
+}
+
+.codeSample {
+	margin-top: 3px;
+}
+
+.codeSampleLink {
+	padding: 6px 6px 6px 6px;
+	border: 1px solid #333;
+	border-bottom: none;
+	font-size: 14px;
+	color: #333;
+	text-decoration: none;
+}
+
+.activeCodeSample {
+	background: #333;
+	color: #fff;
+}
+
+.responseText {
+	color: #666;
+	font-size: 12px;
+}
+
+.resources {
+	list-style-type: square;
+
+}
+
+.resources li {
+	margin: 0px 0px 10px 0;
+	padding: 0;
+}
+
+.resources li a {
+	color: #333;
+	text-decoration: none;
+	font-size: 16px;
+	font-weight: bold;
+}
+
+.resources li a:hover {
+	color: #FF6347;
+}
+
+ul.verbs {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+
+ul.verbs li {
+	padding: 10px;
+}
+
+
+</style>
+
+</head>
+
+<body>
+<div class="container">
+
+<header>
+	<h1><a href="<?php echo $_SERVER['PHP_SELF']; ?>"><?php echo $RAML->get('title'); ?></a></h1>
+    <span>version <?php echo $RAML->get('version'); ?></span><span style="margin-left: 40px;"><?php echo $RAML->get('baseUri'); ?></span>
+</header>
+
+<nav>
+	<?php 
+		include('_menu.phtml');
+	?>
+</nav>
+
+<article>
+	<?php if ($RAML->getCurrentPath() != '/'): ?>
+		<h2><?php echo $RAML->getCurrentPath(); ?></h2>
+	<?php elseif (!$RAML->path()->description): ?>
+		<!-- CSS HACK --><img width="1" height="1" />
+	<?php endif; ?>
+	
+	
+	<?php $validPath = $RAML->isPathValid($RAML->getCurrentPath()); ?>
+	
+	
+	<?php if($validPath && !$RAML->getCurrentAction() && $RAML->path()->description):
+		echo RAML2HTML\markdown::parse($RAML->path()->description); 
+	endif; ?>
+	
+	
+	<?php
+	if (!$validPath):
+		include('_404.phtml');
+	endif;
+	?>
+	
+	
+	<?php 
+	if ($validPath && $RAML->path()->getVerbs() && !$RAML->getCurrentAction()):
+		include('_verbs.phtml');
+	endif;
+	?>
+	
+	
+	
+	<?php 
+	if ($validPath && $RAML->getChildPaths($RAML->getCurrentPath()) && !$RAML->getCurrentAction()):
+		include('_resources.phtml');
+	endif;
+	?>
+	
+	
+	<?php
+	if ($RAML->getCurrentAction()):
+		include('_action.phtml');
+		if ($disqus && $disqus_shortname):
+			include('_comments.phtml');
+		endif;
+	endif;
+	?>
+</article>
+
+<br style="clear: both;" />
+
+<footer>
+	powered by <a href="http://www.raml.org">RAML</a> &nbsp; &nbsp; | &nbsp; &nbsp; script by <a href="http://www.mikestowe.com/2014/05/raml-2-html.php" target="_blank">MikeStowe.com</a>
+</footer>
+
+</div>
+
+
+</body>
+</html>
