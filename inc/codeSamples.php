@@ -129,7 +129,7 @@ class codeSamples
 		$template .= 'xmlHttp.open("'.strtoupper($this->RAML->getCurrentAction()).'", "'.$this->path().'", false);' . "\n";
 		$template .= "\n";
 		$template .= "// Make sure you set the appropriate headers\n";
-		$template .= 'xmlHttp.setRequestHeader("Header Goes Here");' . "\n\n";
+		$template .= 'xmlHttp.setRequestHeader("Header Key", "Header Value");' . "\n\n";
 		$send = 'null';
 		
 		if ($this->RAML->getCurrentAction() != 'GET') {
