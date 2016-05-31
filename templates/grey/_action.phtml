@@ -10,6 +10,9 @@
 
 
 <?php if ($RAML->action()->get('queryParameters')->isArray()): ?>
+	<?php if ($tryIt) { ?>
+	<a href="javascript:void(0);" class="badge" onClick="showTryIt();" style="margin-top: 16px; margin-right: 4%; float: right; background: #333;">Try It</a>
+	<?php } ?>
 	<h3>Query Parameters</h3>
 	<table>
 		<thead>
@@ -143,3 +146,95 @@
 	</div>
 	<?php } ?>
 <?php endif; ?>
+
+
+<?php if ($tryIt) { ?>
+<!-- TRY IT FUNCTIONALITY -->
+<script type="text/JavaScript" language="JavaScript">
+	function showTryIt() {
+		$('.tryitmodal').show();
+	}
+	
+	function hideTryIt() {
+		$('.tryitmodal').hide();
+	}
+	
+	function doTryIt() {
+		xmlHttp = new XMLHttpRequest();
+		tryItStop = false;
+		
+		$('#tryitform').submit();
+		
+		// Handle queryParameters
+		tryItPath = '<?php echo $RAML->baseUri . $RAML->getCurrentPath(); ?>' + '?';
+		$('.tryitparams').each(function(param) {
+			if ($(this).val() != '') {
+				tryItPath += $(this).attr('name') + '=' + escape($(this).val()) + '&';
+				$(this).attr('style', 'width: 100%;');
+			} else if ($(this).hasClass('tryitrequired')) {
+				$(this).css('border', '1px solid #900').css('background', '#900').css('color', '#fff').focus();
+				tryItStop = true;
+			}
+		});
+		
+		// Check for errors
+		if (tryItStop) {
+			return;
+		}
+		
+		var tryItData = null;
+		
+		<?php if ($RAML->getCurrentAction() != 'GET') { ?>
+			var tryItData = $('.tryitbody').val();
+		<?php } ?>
+			
+		xmlHttp.onreadystatechange = function() {
+            if (xmlHttp.readyState == 4) {
+                var response = 'Response Code: ' + xmlHttp.status + "\nContent-type: " + xmlHttp.getResponseHeader('Content-type') + "\n----------------------\n\n" + xmlHttp.responseText;
+                $('.tryitresult').val(response);
+                
+                hljs.configure({useBR: true});
+				$('.tryitresult').each(function(i, block) {
+				  hljs.highlightBlock(block);
+				});
+            }
+        };
+		xmlHttp.open("<?php echo $RAML->getCurrentAction(); ?>", tryItPath);
+		
+		// Add in Headers
+		$('.tryitheaders').each(function(param) {
+			if ($(this).val() != '') {
+				var valueName = $(this).attr('name') + 'value';
+				xmlHttp.setRequestHeader($(this).val(), $("input[name='"+valueName+"']").val());
+			}
+		});
+		
+		xmlHttp.send(tryItData);
+	}
+</script>
+<div class="tryitmodal" style="display: none; position: absolute; top: 0; left: 0; height: 200%; width: 100%; background: #333; opacity: 0.8;"></div>
+<div class="tryitmodal" style="display: none; position: absolute; top: 0; left: 0; right: 0; margin: 40px auto; width: 500px; padding: 20px; background: #fff;">
+	<form id="tryitform" action="javascript:void(0);">
+		<span class="badge badge_<?php echo $RAML->getCurrentAction(); ?>"><?php echo $RAML->getCurrentAction(); ?></span>
+		<strong style="display: inline-block; font-size: 14px; padding-top: 5px;" class="text_<?php echo $RAML->getCurrentAction(); ?>"><?php echo $RAML->baseUri . $RAML->getCurrentPath(); ?></strong>
+		<a href="javascript:void(0);" class="badge" style="background: #900; float: right; margin-right: 0;" onclick="hideTryIt();">CLOSE</a>
+		<table>
+		<tr><td colspan="2"><b>Headers</b><a href="javascript:void(0);" onclick="if ($('.tryitheaderrow').is(':visible')) { $('.tryitheaderrow').hide(); } else { $('.tryitheaderrow').show(); }" style="margin-top: 4px; font-size: 10px; float: right; color: #333; text-decoration: none;">show/hide</a></td></tr>
+		<tr class="tryitheaderrow" style="display: none;"><td><input type="text" style="width: 100%;" name="tryitheader1" value="" class="tryitheaders"></td><td><input type="text" style="width: 100%;" name="tryitheader1value" value=""></td></tr>
+		<tr class="tryitheaderrow" style="display: none;"><td><input type="text" style="width: 100%;" name="tryitheader2" value="" class="tryitheaders"></td><td><input type="text" style="width: 100%;" name="tryitheader2value" value=""></td></tr>
+		<tr class="tryitheaderrow" style="display: none;"><td><input type="text" style="width: 100%;" name="tryitheader3" value="" class="tryitheaders"></td><td><input type="text" style="width: 100%;" name="tryitheader3value" value=""></td></tr>
+		<tr class="tryitheaderrow" style="display: none;"><td><input type="text" style="width: 100%;" name="tryitheader4" value="" class="tryitheaders"></td><td><input type="text" style="width: 100%;" name="tryitheader4value" value=""></td></tr>
+		<tr class="tryitheaderrow" style="display: none;"><td colspan="2">&nbsp;</td></tr>
+		<tr><td colspan="2"><b>Query Parameters</b><a href="javascript:void(0);" onclick="if ($('.tryitparamrow').is(':visible')) { $('.tryitparamrow').hide(); } else { $('.tryitparamrow').show(); }" style="margin-top: 4px; font-size: 10px; float: right; color: #333; text-decoration: none;">show/hide</a></td></tr>
+		<?php foreach ($RAML->action()->get('queryParameters')->toArray() as $param => $details) { ?>
+		<tr class="tryitparamrow"><td><?php echo $param . (isset($details['required']) && $details['required'] == 1 ? '<span style="color: red">*</span>' : '' ); ?></td><td><input type="text" style="width: 100%;" name="<?php echo $param; ?>" value="<?php echo (isset($details['default']) ? $details['default'] : ''); ?>" class="tryitparams <?php echo (isset($details['required']) && $details['required'] == 1 ? 'tryitrequired' : '' ); ?>"></td></tr>
+		<?php } if($RAML->getCurrentAction() != 'GET') { ?>
+		<tr><td colspan="2">&nbsp;</td></tr>
+		<tr><td colspan="2"><b>Body Data</b><br /><textarea class="tryitbody" style="width: 100%; height: 100px;"></textarea></td></tr>
+		<?php } ?>
+		<tr><td colspan="2">&nbsp;</td></tr>
+		<tr><td colspan="2"><a href="javascript:void(0);" class="badge" style="width: 200px;" onclick="doTryIt();">TRY IT</a><span style="float: right;"><b>Response:</b></span><br /><textarea class="tryitresult" style="margin-top: 4px; width: 100%; height: 150px;"></textarea></td></tr>
+		</table>
+	</form>
+</div>
+<?php } ?>
