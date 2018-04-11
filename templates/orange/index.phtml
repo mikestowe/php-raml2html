@@ -250,13 +250,13 @@ ul.verbs li {
 </head>
 
 <body>
+		
 <div class="container">
 
 <header>
 	<h1><a href="<?php echo $_SERVER['PHP_SELF']; ?>"><?php echo $RAML->get('title'); ?></a></h1>
     <span>version <?php echo $RAML->get('version'); ?></span><span style="margin-left: 40px;"><?php echo $RAML->get('baseUri'); ?></span>
 </header>
-
 <nav>
 	<?php 
 		include('_menu.phtml');
@@ -285,7 +285,17 @@ ul.verbs li {
 	endif;
 	?>
 	
-	
+	<h3>
+				Introduce your RAML file location
+				<form enctype="multipart/form-data" action="index.php" method="POST">
+				    File: <br/><input name="name" type="file" size=100/>
+				  <input type="submit" value="Send" />
+				</form>
+				<form enctype="multipart/form-data" action="index.php" method="POST">
+				    URL: <input name="name" type="text" size=100/>
+				  <input type="submit" value="Send" />
+				</form>
+	</h3>
 	<?php 
 	if ($validPath && $RAML->path()->getVerbs() && !$RAML->getCurrentAction()):
 		include('_verbs.phtml');

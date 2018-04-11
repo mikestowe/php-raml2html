@@ -1,8 +1,5 @@
 <?php
 
-// Source of Your RAML file (local or http)
-$RAMLsource = 'raml/twitter.raml';
-
 // Types of Action Verbs Allowed
 $RAMLactionVerbs = array('get', 'post', 'put', 'patch', 'delete', 'connect', 'trace');
 
@@ -10,7 +7,7 @@ $RAMLactionVerbs = array('get', 'post', 'put', 'patch', 'delete', 'connect', 'tr
 $cacheTimeLimit = '36000';
 
 // Path to the theme file for the docs
-$docsTheme = 'templates/grey/index.phtml';
+$docsTheme = 'templates/orange/index.phtml';
 
 // Enable Try It (alpha)
 $tryIt = false;
