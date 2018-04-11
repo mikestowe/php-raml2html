@@ -478,9 +478,7 @@ class RAML extends RAMLDataObject
 				$ext = strtolower(array_pop($ext_t));
 				
 				if (in_array($ext, array('yaml', 'raml'))) {
-					$t = spyc_load_file($this->includePath . $matches[1]);
-					$array = array_merge($t, $array);
-					unset($array[$key]);
+					$array[$key] = $this->handleIncludes(spyc_load_file($this->includePath . $matches[1]));
 				} else {
 					$array[$key] = file_get_contents($this->includePath . $matches[1]);
 				}
