@@ -157,7 +157,7 @@ class RAML extends RAMLDataObject
 				$this->paths[$key]->addChild($this->formatParentPath($key) . $skey, $skey);
 				$this->generatePathData($this->formatParentPath($key) . $skey, $svalue);
 				unset($value[$skey]);
-			} elseif ($skey == 'is') {
+			} elseif ($skey === 'is') {
 				if (is_array($svalue)) {
 					foreach($svalue as $ivalue) {
 						if (!isset($value[$ivalue])) {
